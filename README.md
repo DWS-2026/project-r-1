@@ -20,8 +20,8 @@ A los usuarios les aporta conocimiento variado para que su vida sea un poco más
 ### **Entidades**
 Indicar las entidades principales que gestionará la aplicación y las relaciones entre ellas:
 
-1. **Usuario:** Nombre, contraseña, email, foto de perfil. Relaciones: un usuario crea consejos y compra consejos.
-2. **Consejo:** Título (ej: "Cómo olvidar a tu ex"), Categoría ("Amor"), Precio, Texto Secreto (el consejo en sí que desbloqueas después de pagar), Imagen de portada. Pertenece al usuario que lo vende.
+1. **Usuario:** Nombre, contraseña, email, foto de perfil.
+2. **Consejo:** Título (ej: "Cómo olvidar a tu ex"), Categoría ("Amor"), Precio, Texto Secreto (el consejo en sí que desbloqueas después de pagar), Imagen de portada.
 3. **Transacción:** Entidad intermedia que conecta Usuario y Consejo. Registra quién compró qué y cuándo.
 4. **Valoración:** Un usuario escribe una valoración sobre un consejo concreto.
 
