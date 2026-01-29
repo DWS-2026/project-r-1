@@ -3,25 +3,26 @@
 ## 👥 Miembros del Equipo
 | Nombre y Apellidos | Correo URJC | Usuario GitHub |
 |:--- |:--- |:--- |
-| [Nombre 1] | [email1]@alumnos.urjc.es | [User1] |
-| [Nombre 2] | [email2]@alumnos.urjc.es | [User2] |
-| [Nombre 3] | [email3]@alumnos.urjc.es | [User3] |
-| [Nombre 4] | [email4]@alumnos.urjc.es | [User4] |
+| Fermin Aragones Gonzalez | f.aragones.2023@alumnos.urjc.es | FerminAragones |
+
 
 ---
 
 ## 🎭 **Preparación: Definición del Proyecto**
 
 ### **Descripción del Tema**
-[Escribe aquí una descripción breve y concisa de qué trata tu aplicación, el sector al que pertenece y qué valor aporta al usuario].
+Mi página web va a ser una web de compra/venta de consejos.  
+Es como una web de compra/venta de objetos de segunda pero aquí se trafica con consejos en su lugar.
+Básicamente tú solo ves una imagen y el título del consejo y solo después de pagar puedes ver el consejo. E.g.: Título: "Cómo encontrar el amor fácilmente" Categoría: "Amor" Consejo: "El que come de todo no pasa hambre."  
+A los usuarios les aporta conocimiento variado para que su vida sea un poco más fácil, así como la oportunidad de lucrarse vendiendo su propio conocimiento.
 
 ### **Entidades**
 Indicar las entidades principales que gestionará la aplicación y las relaciones entre ellas:
 
-1. **[Entidad 1]**: [Ej: Usuario]
-2. **[Entidad 2]**: [Ej: Producto]
-3. **[Entidad 3]**: [Ej: Pedido]
-4. **[Entidad 4]**: [Ej: Categoría]
+1. Usuario: Nombre, contraseña, email, foto de perfil. Relaciones: un usuario crea consejos y compra consejos.
+2. Consejo: Título (ej: "Cómo olvidar a tu ex"), Categoría ("Amor"), Precio, Texto Secreto (el consejo en sí que desbloqueas despues de pagar), Imagen de portada.) Pertenece al usuario que lo vende.
+3. Transacción: Conecta un Usuario (comprador) con un Consejo.  
+4. Valoración: Un usuario escribe una valoración sobre un consejo concreto.
 
 **Relaciones entre entidades:**
 - [Ej: Usuario - Pedido: Un usuario puede tener múltiples pedidos (1:N)]
