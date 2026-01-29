@@ -1,4 +1,4 @@
-# [Nombre de la Aplicación]
+# Buy A Brainwave
 
 ## 👥 Miembros del Equipo
 | Nombre y Apellidos | Correo URJC | Usuario GitHub |
@@ -11,47 +11,50 @@
 ## 🎭 **Preparación: Definición del Proyecto**
 
 ### **Descripción del Tema**
-Mi página web va a ser una web de compra/venta de consejos.  
-Es como una web de compra/venta de objetos de segunda pero aquí se trafica con consejos en su lugar.
-Básicamente tú solo ves una imagen y el título del consejo y solo después de pagar puedes ver el consejo. E.g.: Título: "Cómo encontrar el amor fácilmente" Categoría: "Amor" Consejo: "El que come de todo no pasa hambre."  
+Buy A Brainwave es página web de compra/venta de consejos.  
+Es como una web de compra/venta de objetos de segunda mano pero aquí se trafica con consejos en su lugar.  
+Básicamente tú solo ves una imagen y el título del consejo y solo después de pagar puedes ver el consejo.  
+E.g.: Título: "Cómo encontrar el amor fácilmente" Categoría: "Amor" Consejo: "El que come de todo no pasa hambre."  
 A los usuarios les aporta conocimiento variado para que su vida sea un poco más fácil, así como la oportunidad de lucrarse vendiendo su propio conocimiento.
 
 ### **Entidades**
 Indicar las entidades principales que gestionará la aplicación y las relaciones entre ellas:
 
-1. Usuario: Nombre, contraseña, email, foto de perfil. Relaciones: un usuario crea consejos y compra consejos.
-2. Consejo: Título (ej: "Cómo olvidar a tu ex"), Categoría ("Amor"), Precio, Texto Secreto (el consejo en sí que desbloqueas despues de pagar), Imagen de portada.) Pertenece al usuario que lo vende.
-3. Transacción: Conecta un Usuario (comprador) con un Consejo.  
-4. Valoración: Un usuario escribe una valoración sobre un consejo concreto.
+1. **Usuario:** Nombre, contraseña, email, foto de perfil. Relaciones: un usuario crea consejos y compra consejos.
+2. **Consejo:** Título (ej: "Cómo olvidar a tu ex"), Categoría ("Amor"), Precio, Texto Secreto (el consejo en sí que desbloqueas después de pagar), Imagen de portada. Pertenece al usuario que lo vende.
+3. **Transacción:** Entidad intermedia que conecta Usuario y Consejo. Registra quién compró qué y cuándo.
+4. **Valoración:** Un usuario escribe una valoración sobre un consejo concreto.
 
 **Relaciones entre entidades:**
-- [Ej: Usuario - Pedido: Un usuario puede tener múltiples pedidos (1:N)]
-- [Ej: Pedido - Producto: Un pedido puede contener múltiples productos y un producto puede estar en múltiples pedidos (N:M)]
-- [Ej: Producto - Categoría: Un producto pertenece a una categoría (N:1)]
-- [Descripción de otras relaciones relevantes]
+- **Usuario - Consejo (1:N):** *Relación de Venta*. Un Usuario (vendedor) publica múltiples Consejos, pero un Consejo específico es creado por un solo Usuario.
+- **Usuario - Consejo (N:M):** *Relación de Compra*. Un Usuario puede comprar muchos Consejos y un mismo Consejo puede ser comprado por muchos Usuarios. Esta relación N:M se gestiona a través de la entidad Transacción.
+- **Usuario - Valoración (1:N):** Un Usuario puede escribir múltiples Valoraciones.
+- **Consejo - Valoración (1:N):** Un Consejo puede recibir múltiples Valoraciones de distintos usuarios.
 
 ### **Permisos de los Usuarios**
 Describir los permisos de cada tipo de usuario e indicar de qué entidades es dueño:
 
 * **Usuario Anónimo**: 
-  - Permisos: [Ej: Visualización de catálogo, búsqueda de productos, registro]
-  - No es dueño de ninguna entidad
+  - **Permisos:** Visualización del catálogo de consejos (solo título, categoría, precio e imagen de portada, **nunca** el texto secreto), búsqueda/filtrado de consejos y acceso a las páginas de login/registro.
+  - **No es dueño de ninguna entidad.**
 
 * **Usuario Registrado**: 
-  - Permisos: [Ej: Gestión de perfil, realizar pedidos, crear valoraciones]
-  - Es dueño de: [Ej: Sus propios Pedidos, su Perfil de Usuario, sus Valoraciones]
+  - **Permisos:** Todas las del anónimo más: comprar consejos (desbloquear contenido), vender sus propios consejos (crear/editar/borrar), subir imágenes, ver su historial de compras y valorar consejos adquiridos.
+  - **Es dueño de:**
+    - Su entidad **Usuario** (puede editar su propio perfil/avatar).
+    - Los **Consejos** que ha publicado para la venta (puede editar el precio o borrarlos).
+    - Sus **Transacciones** (puede consultar su propio historial de compras).
+    - Sus **Valoraciones** (puede editar o borrar las reseñas que él mismo escribió).
 
 * **Administrador**: 
-  - Permisos: [Ej: Gestión completa de productos (CRUD), visualización de estadísticas, moderación de contenido]
-  - Es dueño de: [Ej: Productos, Categorías, puede gestionar todos los Pedidos y Usuarios]
+  - **Permisos:** Control total de la plataforma. Puede borrar consejos inapropiados (ej. estafas o contenido ilegal), eliminar usuarios conflictivos y moderar valoraciones falsas.
+  - **Es dueño de:** Tiene permisos globales sobre todas las entidades (**Usuario**, **Consejo**, **Transacción**, **Valoración**) para tareas de mantenimiento y moderación.
 
 ### **Imágenes**
 Indicar qué entidades tendrán asociadas una o varias imágenes:
 
-- **[Entidad con imágenes 1]**: [Ej: Usuario - Una imagen de avatar por usuario]
-- **[Entidad con imágenes 2]**: [Ej: Producto - Múltiples imágenes por producto (galería)]
-- **[Entidad con imágenes 3]**: [Ej: Categoría - Una imagen representativa por categoría]
-
+- **Entidad Usuario:** Una imagen de avatar (foto de perfil) que identifica al vendedor/comprador.
+- **Entidad Consejo:** Una imagen de portada obligatoria. Es vital para la web, ya que el usuario "compra a ciegas" viendo solo esta imagen y el título antes de pagar.
 ---
 
 ## 🛠 **Práctica 1: Maquetación de páginas con HTML y CSS**
