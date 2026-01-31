@@ -1,0 +1,19 @@
+/* GLOBAL STYLES */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa; /* Light gray background */
+}
+
+/* Custom adjustments for the Navbar to look professional */
+.navbar-brand {
+    font-weight: bold;
+    color: #0d6efd !important; /* Bootstrap primary blue */
+}
+
+/* Footer styling */
+footer {
+    background-color: #343a40;
+    color: white;
+    padding: 20px 0;
+    margin-top: 50px;
+}
