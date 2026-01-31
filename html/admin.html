@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Buy A Brainwave</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/custom.css">
+</head>
+<body style="background-color: white;">
+
+    <div class="container-fluid bg-dark text-white border-bottom p-3 mb-4">
+        <div class="row align-items-center">
+            <div class="col-md-4">
+                <h2 class="m-0">PANEL ADMINISTRADOR</h2>
+            </div>
+            <div class="col-md-8 text-end">
+                <a href="../index.html" class="btn btn-light">Volver a la Web</a>
+                <a href="../index.html" class="btn btn-danger">Salir</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        
+        <h3 class="mb-3">Gestión de Usuarios</h3>
+        <div class="table-responsive mb-5">
+            <table class="table table-bordered table-striped">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Usuario</th>
+                        <th>Email</th>
+                        <th>Rol</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>FerminAragones</td>
+                        <td>f.aragones@urjc.es</td>
+                        <td>User</td>
+                        <td>
+                            <button class="btn btn-danger btn-sm">Banear</button>
+                            <button class="btn btn-primary btn-sm">Ver Perfil</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>UsuarioMalo</td>
+                        <td>troll@internet.com</td>
+                        <td>User</td>
+                        <td>
+                            <button class="btn btn-danger btn-sm">Banear</button>
+                            <button class="btn btn-primary btn-sm">Ver Perfil</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3 class="mb-3">Moderación de Consejos</h3>
+        <div class="border p-3">
+            <p>Consejo reportado: "Cómo estafar a tu abuela"</p>
+            <button class="btn btn-danger">Eliminar Consejo</button>
+            <button class="btn btn-success">Ignorar</button>
+        </div>
+
+    </div>
+
+    <div class="container-fluid bg-light border-top p-3 text-center mt-5">
+        <p class="m-0">Buy A Brainwave℠</p>
+    </div>
+</body>
+</html>
