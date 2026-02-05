@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro - Buy A Brainwave</title>
+    <title>Escribir Valoración - Buy A Brainwave</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../css/custom.css">
 </head>
@@ -15,42 +15,42 @@
                 <h2 class="m-0">Buy A Brainwave</h2>
             </div>
             <div class="col-md-8 text-end">
-                <a href="../index.html" class="btn btn-secondary">Catálogo</a>
-                <a href="login.html" class="btn btn-outline-dark">Login</a>
-                <a href="register.html" class="btn btn-dark active">Registro</a>
+                <a href="../index.html" class="btn btn-secondary">Cancelar</a>
             </div>
         </div>
     </div>
 
     <div class="container" style="max-width: 600px;">
+        
         <div class="border p-4 mb-5">
-            <h3 class="text-center">Crear Cuenta Nueva</h3>
+            <h3>Deja tu opinión</h3>
+            <p class="text-muted">Estás valorando: "Cómo encontrar el amor"</p>
             <hr>
             
             <form>
                 <div class="mb-3">
-                    <label class="form-label">Nombre de Usuario:</label>
-                    <input type="text" class="form-control">
+                    <label class="form-label">Título breve:</label>
+                    <input type="text" class="form-control" placeholder="Ej: Me funcionó...">
                 </div>
+
                 <div class="mb-3">
-                    <label class="form-label">Email:</label>
-                    <input type="email" class="form-control">
+                    <label class="form-label">Nota (0 al 10):</label>
+                    <input type="number" class="form-control" min="0" max="10" placeholder="10">
                 </div>
+
                 <div class="mb-3">
-                    <label class="form-label">Foto de Perfil (Avatar):</label>
-                    <input type="file" class="form-control">
+                    <label class="form-label">Tu experiencia:</label>
+                    <textarea class="form-control" rows="4" placeholder="Cuenta qué te pareció el consejo..."></textarea>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label">Contraseña:</label>
-                    <input type="password" class="form-control">
-                </div>
-                <a href="profile-view.html" class="btn btn-success w-100">Registrarse</a>
+
+                <button class="btn btn-primary w-100">Publicar Valoración</button>
             </form>
         </div>
+
     </div>
 
     <div class="container-fluid bg-light border-top p-3 text-center">
-        <p class="m-0">Buy A Brainwave℠</p>
+        <p class="m-0">Práctica DWS 2026</p>
     </div>
 </body>
 </html>
