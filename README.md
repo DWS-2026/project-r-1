@@ -68,72 +68,29 @@ Diagrama que muestra cómo se navega entre las diferentes páginas de la aplicac
 
 ![Diagrama de Navegación](images-Documentation/Diagrama.jpg)
 
-> [Azul: Todos los users. Amarillo: user registrados. Verde: Administrador. Como se puede ver en el diagrama, desde el index se puede acceder a cualquier parte de la web, y otra pantalla importante a partir de la cual se pueden crear/ver/editar varias entidades es la de profile-view]
+> [Azul: Todos los users. Amarillo: user registrados. Verde: Administrador. Como se puede ver en el diagrama, desde el index se puede acceder a cualquier parte de la web, y otra pantalla importante a partir de la cual se pueden tocar varias entidades es la de profile-view]
 
 ### **Capturas de Pantalla y Descripción de Páginas**
 
 #### **1. Página Principal / Home**
-![Página Principal](images-Documentation/home-page.png)
+![Página Principal](images-Documentation/index.png)
 
-> [Descripción breve: ]
+> [Desde aqui te puedes registrar o logear. Como user anónimo también puedes ver todo el catálogo de productos así como ver sus detalles.]
 
-#### **AQUÍ AÑADIR EL RESTO DE PÁGINAS**
+![Página de perfil](images-Documentation/profile-view.png)
+
+> [Esta página es esencial para la web, solo puedes acceder a ella tras registrarte o logearte. En ella puedes ver/crear/modificar tus consejos y tus valoraciones a los consejos de otros users, así como ver tus transacciones (botón "Historial de compras"). También puedes ver algunos datos como el correo o tu avatar actual e incluso cambiar cualquier credencial de tu cuenta a través del botón "Editar Perfil".]
+
+![Página de creación de consejo](images-Documentation/advice-create.png)
+> [Aunque no sea un pilar para el navegamiento de la web como las dos pantallas anteriores, esta página también guarda cierta relevancia debido a que en ella vemos cuáles son los campos que componen cada uno de nuestros consejos, que al final son la entidad en torno a la cual gira toda la página. Cabe destacar que cuanto el user vende un consejo, ese consejo no desaparece de la web, sino continua allí para que distintos users puedan comprarlo también, de ahí sale la relación N:M. Un user puede vender muchos consejos distintos al mismo tiempo que un consejo puede ser comprado por muchos users distintos.]
+
 
 ### **Participación de Miembros en la Práctica 1**
 
-#### **Alumno 1 - [Nombre Completo]**
+#### **Alumno 1 - [Fermín Aragonés González]**
 
-[Descripción de las tareas y responsabilidades principales del alumno en el proyecto]
+Todas las tareas, código, etc realizadas por Fermín :)
 
-| Nº    | Commits      | Files      |
-|:------------: |:------------:| :------------:|
-|1| [Descripción commit 1](URL_commit_1)  | [Archivo1](URL_archivo_1)   |
-|2| [Descripción commit 2](URL_commit_2)  | [Archivo2](URL_archivo_2)   |
-|3| [Descripción commit 3](URL_commit_3)  | [Archivo3](URL_archivo_3)   |
-|4| [Descripción commit 4](URL_commit_4)  | [Archivo4](URL_archivo_4)   |
-|5| [Descripción commit 5](URL_commit_5)  | [Archivo5](URL_archivo_5)   |
-
----
-
-#### **Alumno 2 - [Nombre Completo]**
-
-[Descripción de las tareas y responsabilidades principales del alumno en el proyecto]
-
-| Nº    | Commits      | Files      |
-|:------------: |:------------:| :------------:|
-|1| [Descripción commit 1](URL_commit_1)  | [Archivo1](URL_archivo_1)   |
-|2| [Descripción commit 2](URL_commit_2)  | [Archivo2](URL_archivo_2)   |
-|3| [Descripción commit 3](URL_commit_3)  | [Archivo3](URL_archivo_3)   |
-|4| [Descripción commit 4](URL_commit_4)  | [Archivo4](URL_archivo_4)   |
-|5| [Descripción commit 5](URL_commit_5)  | [Archivo5](URL_archivo_5)   |
-
----
-
-#### **Alumno 3 - [Nombre Completo]**
-
-[Descripción de las tareas y responsabilidades principales del alumno en el proyecto]
-
-| Nº    | Commits      | Files      |
-|:------------: |:------------:| :------------:|
-|1| [Descripción commit 1](URL_commit_1)  | [Archivo1](URL_archivo_1)   |
-|2| [Descripción commit 2](URL_commit_2)  | [Archivo2](URL_archivo_2)   |
-|3| [Descripción commit 3](URL_commit_3)  | [Archivo3](URL_archivo_3)   |
-|4| [Descripción commit 4](URL_commit_4)  | [Archivo4](URL_archivo_4)   |
-|5| [Descripción commit 5](URL_commit_5)  | [Archivo5](URL_archivo_5)   |
-
----
-
-#### **Alumno 4 - [Nombre Completo]**
-
-[Descripción de las tareas y responsabilidades principales del alumno en el proyecto]
-
-| Nº    | Commits      | Files      |
-|:------------: |:------------:| :------------:|
-|1| [Descripción commit 1](URL_commit_1)  | [Archivo1](URL_archivo_1)   |
-|2| [Descripción commit 2](URL_commit_2)  | [Archivo2](URL_archivo_2)   |
-|3| [Descripción commit 3](URL_commit_3)  | [Archivo3](URL_archivo_3)   |
-|4| [Descripción commit 4](URL_commit_4)  | [Archivo4](URL_archivo_4)   |
-|5| [Descripción commit 5](URL_commit_5)  | [Archivo5](URL_archivo_5)   |
 
 ---
 
