@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historial de Transacciones - Buy A Brainwave</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/custom.css">
+</head>
+<body style="background-color: white;">
+
+    <div class="container-fluid bg-light border-bottom p-3 mb-4">
+        <div class="row align-items-center">
+            <div class="col-md-4">
+                <h2 class="m-0">Buy A Brainwave</h2>
+            </div>
+            <div class="col-md-8 text-end">
+                <a href="profile-view.html" class="btn btn-secondary">Volver al Perfil</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" style="max-width: 900px;">
+        
+        <h3 class="mb-4">Historial de Compras</h3>
+        
+        <div class="table-responsive shadow-sm border rounded">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Concepto (Consejo)</th>
+                        <th>Método de Pago</th>
+                        <th>Importe</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>30/01/2026</td>
+                        <td><strong>Cómo encontrar el amor fácilmente</strong></td>
+                        <td>Tarjeta **** 1234</td>
+                        <td class="text-danger fw-bold">-5.00 €</td>
+                        <td><span class="badge bg-success">Completado</span></td>
+                        <td>
+                            <a href="advice-detail.html" class="btn btn-outline-primary btn-sm">Ver Consejo</a>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>20/01/2026</td>
+                        <td>Invertir en Bitcoin sin perder dinero</td>
+                        <td>Tarjeta **** 1234</td>
+                        <td class="text-danger fw-bold">-20.00 €</td>
+                        <td><span class="badge bg-success">Completado</span></td>
+                        <td>
+                            <a href="advice-detail.html" class="btn btn-outline-primary btn-sm">Ver Consejo</a>
+                        </td>
+                    </tr>
+
+                    <tr class="table-light">
+                        <td>15/01/2026</td>
+                        <td><em>Venta: Trucos de cocina básica</em></td>
+                        <td>Saldo Cuenta</td>
+                        <td class="text-success fw-bold">+2.50 €</td>
+                        <td><span class="badge bg-info text-dark">Ingresado</span></td>
+                        <td>
+                            <button class="btn btn-sm btn-secondary disabled">Detalles</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="mt-4 text-end">
+            <p class="text-muted small">Mostrando las últimas 3 transacciones.</p>
+        </div>
+
+    </div>
+
+    <div class="container-fluid bg-light border-top p-3 text-center mt-5">
+        <p class="m-0">Buy A Brainwave℠</p>
+    </div>
+</body>
+</html>
