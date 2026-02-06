@@ -66,16 +66,16 @@ Indicar qué entidades tendrán asociadas una o varias imágenes:
 ### **Diagrama de Navegación**
 Diagrama que muestra cómo se navega entre las diferentes páginas de la aplicación:
 
-![Diagrama de Navegación](images/navigation-diagram.png)
+![Diagrama de Navegación](images-Documentation/Diagrama.jpg)
 
-> [Descripción opcional del flujo de navegación: Ej: "El usuario puede acceder desde la página principal a todas las secciones mediante el menú de navegación. Los usuarios anónimos solo tienen acceso a las páginas públicas, mientras que los registrados pueden acceder a su perfil y panel de usuario."]
+> [Azul: Todos los users. Amarillo: user registrados. Verde: Administrador. Como se puede ver en el diagrama, desde el index se puede acceder a cualquier parte de la web, y otra pantalla importante a partir de la cual se pueden crear/ver/editar varias entidades es la de profile-view]
 
 ### **Capturas de Pantalla y Descripción de Páginas**
 
 #### **1. Página Principal / Home**
-![Página Principal](images/home-page.png)
+![Página Principal](images-Documentation/home-page.png)
 
-> [Descripción breve: Ej: "Página de inicio que muestra los productos destacados, categorías principales y un banner promocional. Incluye barra de navegación y acceso a registro/login para usuarios no autenticados."]
+> [Descripción breve: ]
 
 #### **AQUÍ AÑADIR EL RESTO DE PÁGINAS**
 
@@ -179,7 +179,7 @@ Solo si han cambiado.
 
 Diagrama mostrando las entidades, sus campos y relaciones:
 
-![Diagrama Entidad-Relación](images/database-diagram.png)
+![Diagrama Entidad-Relación](images-Documentation/database-diagram.png)
 
 > [Descripción opcional: Ej: "El diagrama muestra las 4 entidades principales: Usuario, Producto, Pedido y Categoría, con sus respectivos atributos y relaciones 1:N y N:M."]
 
@@ -187,7 +187,7 @@ Diagrama mostrando las entidades, sus campos y relaciones:
 
 Diagrama de clases de la aplicación con diferenciación por colores o secciones:
 
-![Diagrama de Clases](images/classes-diagram.png)
+![Diagrama de Clases](images-Documentation/classes-diagram.png)
 
 > [Descripción opcional del diagrama y relaciones principales]
 
@@ -269,7 +269,7 @@ Diagrama de clases de la aplicación con diferenciación por colores o secciones
 
 Diagrama actualizado incluyendo los @RestController y su relación con los @Service compartidos:
 
-![Diagrama de Clases Actualizado](images/complete-classes-diagram.png)
+![Diagrama de Clases Actualizado](images-Documentation/complete-classes-diagram.png)
 
 #### **Credenciales de Usuarios de Ejemplo**
 
