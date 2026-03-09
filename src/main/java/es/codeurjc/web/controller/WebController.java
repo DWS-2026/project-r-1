@@ -11,4 +11,15 @@ public class WebController {
     public String index(Model model) {
         return "index";
     }
+
+    @GetMapping("/login")
+    public String login(Model model) {
+        return "login";
+    }
+
+    @GetMapping("/register")
+    public String register(Model model) {
+        return "register";
+    }
+
 }

@@ -1,34 +1,7 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Buy A Brainwave</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/custom.css">
-</head>
-<body style="background-color: white;">
 
-    <div class="container-fluid bg-light border-bottom p-3 mb-4">
-        <div class="row align-items-center">
-            <div class="col-md-4">
-                <h2 class="m-0">Buy A Brainwave</h2>
-            </div>
-            <div class="col-md-8 text-end">
-                <a href="index.html" class="btn btn-secondary">Catálogo</a>
-                <a href="html/login.html" class="btn btn-outline-dark">Login</a>
-                <a href="html/register.html" class="btn btn-dark">Registro</a>
-            </div>
-        </div>
-    </div>
+{{>header}}
 
     <div class="container">
-        
-        <div class="mb-4 p-3 border bg-light">
-            <label>Buscador de consejos:</label>
-            <input type="text" placeholder="Ej: Amor..." style="width: 100%;">
-            <button class="btn btn-primary mt-2">Buscar</button>
-        </div>
 
         <h3>Listado de Consejos</h3>
         <hr>
@@ -73,6 +46,7 @@
 
         </div> 
         
+        
         <div class="mt-4 mb-5">
             <button class="btn btn-light border">Anterior</button>
             <button class="btn btn-light border">1</button>
@@ -81,14 +55,4 @@
         </div>
 
     </div>
-
-    <div class="container-fluid bg-light border-top p-3 text-center">
-        <p class="m-0">Buy A Brainwave℠</p>
-        <br>
-        <small>
-            <a href="html/admin.html" class="text-muted text-decoration-none">Acceso Admin (Demo)</a>
-        </small>
-    </div>
-
-</body>
-</html>
+{{>footer}}
