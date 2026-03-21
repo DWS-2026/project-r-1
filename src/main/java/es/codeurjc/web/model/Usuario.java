@@ -4,6 +4,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import java.util.List;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.FetchType;
 
 @Entity
 public class Usuario {
@@ -17,6 +20,10 @@ public class Usuario {
     private String contrasena;
     // The profile picture will be handled later
 
+    // roles: a list of strings that represent the roles assigned to the user (e.g., "USER", "ADMIN")
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<String> roles;
+
     // Empty constructor required by JPA
     public Usuario() {}
 
@@ -24,6 +31,8 @@ public class Usuario {
         this.nombre = nombre;
         this.email = email;
         this.contrasena = contrasena;
+        // by default, every new user will have the "USER" role
+        this.roles = List.of("USER");
     }
 
     public Long getId() { return id; }
@@ -37,4 +46,7 @@ public class Usuario {
 
     public String getContrasena() { return contrasena; }
     public void setContrasena(String contrasena) { this.contrasena = contrasena; }
+
+    public List<String> getRoles() { return roles; }
+    public void setRoles(List<String> roles) { this.roles = roles; }
 }

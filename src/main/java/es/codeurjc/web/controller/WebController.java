@@ -12,14 +12,8 @@ public class WebController {
         return "index";
     }
 
-    @GetMapping("/login")
-    public String login(Model model) {
-        return "login";
+    @GetMapping("/profile-view")
+    public String profileView(Model model) {
+        return "profile-view";
     }
-
-    @GetMapping("/register")
-    public String register(Model model) {
-        return "register";
-    }
-
 }
