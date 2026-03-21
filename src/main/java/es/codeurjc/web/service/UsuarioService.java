@@ -11,9 +11,13 @@ public class UsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    public void registrarNuevoUsuario(Usuario usuario) {
-        // Later, you can add logic here (like password hashing)
-        // For now, it just saves the user to the database
+    public boolean registrarNuevoUsuario(Usuario usuario) {
+
+        if (usuarioRepository.findByEmail(usuario.getEmail()).isPresent()) { //first we check if the email is already registered
+            return false;
+        }
+
         usuarioRepository.save(usuario);
+        return true;
     }
 }

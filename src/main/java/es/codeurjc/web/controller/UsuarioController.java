@@ -19,8 +19,10 @@ public class UsuarioController {
         
         // 1. The controller receives the 'usuario' object from the HTML form.
         // 2. It passes the object to the Service layer.
-        usuarioService.registrarNuevoUsuario(usuario);
-        
+        if (!usuarioService.registrarNuevoUsuario(usuario)) {
+            return "error";
+        }
+
         // 3. It redirects the browser back to the main page.
         return "redirect:/"; 
     }
