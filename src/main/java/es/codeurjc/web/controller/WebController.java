@@ -1,6 +1,7 @@
 package es.codeurjc.web.controller;
 
 import es.codeurjc.web.model.Consejo;
+import es.codeurjc.web.model.Transaccion;
 import es.codeurjc.web.service.ConsejoService;
 
 import java.util.Optional;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.security.web.csrf.CsrfToken;
 import java.util.List;
 
@@ -56,5 +58,57 @@ public class WebController {
             // 3. Si alguien escribe un ID que no existe, le mostramos la página de error
             return "error"; 
         }
+    }
+
+    @Autowired
+    private es.codeurjc.web.service.TransaccionService transaccionService;
+
+    @Autowired
+    private es.codeurjc.web.repository.UsuarioRepository usuarioRepository;
+
+    // 1. Mostrar la pasarela de pago para un consejo específico
+    @GetMapping("/transaction-create/{id}")
+    public String showPaymentGateway(@PathVariable Long id, Model model, CsrfToken csrfToken) {
+        Optional<Consejo> optionalConsejo = consejoService.findById(id);
+        
+        if (optionalConsejo.isPresent()) {
+            model.addAttribute("consejo", optionalConsejo.get());
+            model.addAttribute("_csrf", csrfToken);
+            return "transaction-create";
+        }
+        return "error";
+    }
+
+    // 2. Procesar el pago y crear la transacción
+    @PostMapping("/transaction-create/{id}")
+    public String processPayment(@PathVariable Long id, java.security.Principal principal) {
+        if (principal == null) return "redirect:/login";
+
+        Optional<Consejo> optionalConsejo = consejoService.findById(id);
+        Optional<es.codeurjc.web.model.Usuario> optionalUser = usuarioRepository.findByEmail(principal.getName());
+
+        if (optionalConsejo.isPresent() && optionalUser.isPresent()) {
+            Consejo consejo = optionalConsejo.get();
+            es.codeurjc.web.model.Usuario buyer = optionalUser.get();
+
+            // Evitar que el usuario compre su propio consejo (opcional pero buena práctica)
+            if (consejo.getSeller() != null && consejo.getSeller().getId().equals(buyer.getId())) {
+                return "redirect:/profile-view"; // O redirigir a una página de error
+            }
+
+            // Crear y guardar la transacción
+            Transaccion transaccion = new Transaccion(buyer, consejo, consejo.getPrice());
+            transaccionService.save(transaccion);
+
+            // Redirigimos al historial de compras
+            return "redirect:/transaction-view";
+        }
+        return "error";
+    }
+
+    // 3. Mostrar el historial de transacciones vacío (lo rellenaremos en el futuro)
+    @GetMapping("/transaction-view")
+    public String showTransactions() {
+        return "transaction-view";
     }
 }

@@ -1,5 +1,7 @@
 package es.codeurjc.web.repository;
 
-public class TransaccionRepository {
-    
+import es.codeurjc.web.model.Transaccion;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface TransaccionRepository extends JpaRepository<Transaccion, Long> {
 }
