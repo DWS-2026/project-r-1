@@ -2,10 +2,13 @@ package es.codeurjc.web.controller;
 
 import es.codeurjc.web.model.Consejo;
 import es.codeurjc.web.service.ConsejoService;
+
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.security.web.csrf.CsrfToken;
 import java.util.List;
 
@@ -37,5 +40,21 @@ public class WebController {
     public String adviceCreate(Model model, CsrfToken csrfToken) {
         model.addAttribute("_csrf", csrfToken);
         return "advice-create";
+    }
+
+    @GetMapping("/advice-detail/{id}")
+    public String showAdviceDetail(@PathVariable Long id, Model model) {
+        // 1. Buscamos el consejo por su ID
+        Optional<Consejo> optionalConsejo = consejoService.findById(id);
+        
+        // 2. Si existe, lo añadimos al modelo y mostramos la página
+        if (optionalConsejo.isPresent()) {
+            Consejo consejo = optionalConsejo.get();
+            model.addAttribute("consejo", consejo);
+            return "advice-detail"; // Asegúrate de que tu archivo se llama advice-detail.html
+        } else {
+            // 3. Si alguien escribe un ID que no existe, le mostramos la página de error
+            return "error"; 
+        }
     }
 }
