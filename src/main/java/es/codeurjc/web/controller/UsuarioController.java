@@ -16,21 +16,21 @@ public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;
 
-    // 1. Método que muestra la pantalla de registro y le pasa el token de seguridad
+    // this method is called when the user wants to view the registration page
     @GetMapping("/register")
     public String mostrarRegistro(Model model, CsrfToken csrfToken) {
         model.addAttribute("_csrf", csrfToken);
         return "register"; 
     }
 
-    // 2. Método que muestra la pantalla de login y le pasa el token de seguridad
+    // this method is called when the user wants to view the login page
     @GetMapping("/login")
     public String mostrarLogin(Model model, CsrfToken csrfToken) {
         model.addAttribute("_csrf", csrfToken);
         return "login"; 
     }
 
-    // 3. Método que procesa el formulario cuando el usuario pulsa "Registrarse"
+    // this method is called when the user submits the registration form
     @PostMapping("/registro")
     public String registrarUsuario(Model model, Usuario usuario) {
         
