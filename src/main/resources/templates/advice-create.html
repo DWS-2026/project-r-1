@@ -15,7 +15,7 @@
                 <h2 class="m-0">Buy A Brainwave</h2>
             </div>
             <div class="col-md-8 text-end">
-                <a href="profile-view.html" class="btn btn-danger">Cancelar y Volver</a>
+                <a href="/profile-view" class="btn btn-danger">Cancelar y Volver</a>
             </div>
         </div>
     </div>
@@ -27,39 +27,42 @@
             <p class="text-muted">Rellena los datos para vender tu sabiduría.</p>
             <hr>
             
-            <form>
+            <form action="/advice-create" method="POST" enctype="multipart/form-data">
+                
+                <input type="hidden" name="_csrf" value="{{_csrf.token}}"/>
+
                 <div class="mb-3">
                     <label class="form-label">Título del Consejo:</label>
-                    <input type="text" class="form-control" placeholder="Ej: Cómo hacerse rico...">
+                    <input type="text" name="title" class="form-control" placeholder="Ej: Cómo hacerse rico..." required>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">Categoría:</label>
-                    <select class="form-select">
-                        <option>Amor</option>
-                        <option>Dinero</option>
-                        <option>Salud</option>
-                        <option>Estudios</option>
+                    <select name="category" class="form-select" required>
+                        <option value="Amor">Amor</option>
+                        <option value="Dinero">Dinero</option>
+                        <option value="Salud">Salud</option>
+                        <option value="Estudios">Estudios</option>
                     </select>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">Precio (€):</label>
-                    <input type="number" class="form-control" placeholder="5.00">
+                    <input type="number" name="price" step="0.01" class="form-control" placeholder="5.00" required>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">Imagen de Portada:</label>
-                    <input type="file" class="form-control">
+                    <input type="file" name="imageFile" class="form-control">
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label"><strong>Texto Secreto (Solo visible tras pagar):</strong></label>
-                    <textarea class="form-control" rows="5" placeholder="Escribe aquí tu consejo..."></textarea>
+                    <textarea name="secretText" class="form-control" rows="5" placeholder="Escribe aquí tu consejo..." required></textarea>
                 </div>
 
-                <button class="btn btn-success w-100 mb-2">Guardar Consejo</button>
-                <button class="btn btn-outline-danger w-100">Borrar Consejo</button>
+                <button type="submit" class="btn btn-success w-100 mb-2">Guardar Consejo</button>
+                <button type="button" class="btn btn-outline-danger w-100">Borrar Consejo</button>
             </form>
         </div>
 

@@ -20,9 +20,29 @@ public class Consejo {
     @Column(columnDefinition = "TEXT")
     private String secretText;
 
-    // Stores the filename or URL of the cover image
-    private String imagePath; 
+// ELIMINA la variable imagePath y pon esto en su lugar:
+    
+    @Lob
+    @Column(columnDefinition = "MEDIUMBLOB")
+    private byte[] imageBytes;
 
+    // --- Asegúrate de actualizar el constructor para quitar imagePath ---
+    public Consejo(String title, String category, double price, String secretText, Usuario seller) {
+        this.title = title;
+        this.category = category;
+        this.price = price;
+        this.secretText = secretText;
+        this.seller = seller;
+    }
+
+    // --- Getters y Setters de la imagen ---
+    public byte[] getImageBytes() {
+        return imageBytes;
+    }
+
+    public void setImageBytes(byte[] imageBytes) {
+        this.imageBytes = imageBytes;
+    }
     // --- Relationships ---
 
     // Many advices can be sold by one user
@@ -46,7 +66,7 @@ public class Consejo {
         this.category = category;
         this.price = price;
         this.secretText = secretText;
-        this.imagePath = imagePath;
+        this.imageBytes = null;
         this.seller = seller;
     }
 
@@ -92,13 +112,6 @@ public class Consejo {
         this.secretText = secretText;
     }
 
-    public String getImagePath() {
-        return imagePath;
-    }
-
-    public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
-    }
 
     public Usuario getSeller() {
         return seller;

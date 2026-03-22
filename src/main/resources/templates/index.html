@@ -1,21 +1,28 @@
 
 {{>header}}
-
-    <div class="container">
-
-        <h3>Listado de Consejos</h3>
-        <hr>
-
-        <div class="row">
+<div class="row">
+            
+            {{#consejos}}
+            <div class="col-md-4 mb-3">
+                <div class="border p-2 text-center"> 
+                    
+                    <img src="/advice/{{id}}/image" alt="Foto Consejo" class="img-fluid mb-2" style="height: 200px; object-fit: cover;">
+                    
+                    <h4>{{title}}</h4>
+                    <p>Categoría: {{category}}</p>
+                    <p><strong>Precio: {{price}} €</strong></p>
+                    
+                    <a href="/advice-detail/{{id}}" class="btn btn-success w-100">Ver Detalles</a>
+                </div>
+            </div>
+            {{/consejos}}
             
             <div class="col-md-4 mb-3">
                 <div class="border p-2 text-center"> 
                     <img src="image/rosa.jpg" alt="Foto Consejo" class="img-fluid mb-2">
-                    
                     <h4>Cómo encontrar el amor</h4>
                     <p>Categoría: Amor</p>
                     <p><strong>Precio: 5.00 €</strong></p>
-                    
                     <a href="html/advice-detail.html" class="btn btn-success w-100">Ver Detalles</a>
                 </div>
             </div>
@@ -23,11 +30,9 @@
             <div class="col-md-4 mb-3">
                 <div class="border p-2 text-center">
                     <img src="image/stonkss.jpg" alt="Foto Consejo" class="img-fluid mb-2">
-                    
                     <h4>Cómo hacerte rico</h4>
                     <p>Categoría: Finanzas</p>
                     <p><strong>Precio: 999.99 €</strong></p>
-                    
                     <a href="html/advice-detail.html" class="btn btn-success w-100">Ver Detalles</a>
                 </div>
             </div>
@@ -35,24 +40,12 @@
             <div class="col-md-4 mb-3">
                 <div class="border p-2 text-center">
                     <img src="image/nerd.png" alt="Foto Consejo" class="img-fluid mb-2">
-                    
                     <h4>Aprobar DWS en 2026 😱 Real NO FAKE ✅ Funcionando 100 %✅</h4>
                     <p>Categoría: Estudios</p>
                     <p><strong>Precio: 240.00 €</strong></p>
-                    
                     <a href="html/advice-detail.html" class="btn btn-success w-100">Ver Detalles</a>
                 </div>
             </div>
 
-        </div> 
-        
-        
-        <div class="mt-4 mb-5">
-            <button class="btn btn-light border">Anterior</button>
-            <button class="btn btn-light border">1</button>
-            <button class="btn btn-light border">2</button>
-            <button class="btn btn-light border">Siguiente</button>
         </div>
-
-    </div>
 {{>footer}}
