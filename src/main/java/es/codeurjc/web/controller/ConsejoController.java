@@ -67,4 +67,88 @@ public class ConsejoController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    // Mostrar formulario de creación
+    @GetMapping("/advice-create")
+    public String adviceCreate(Model model, org.springframework.security.web.csrf.CsrfToken csrfToken) {
+        model.addAttribute("_csrf", csrfToken);
+        return "advice-create";
+    }
+
+    // Mostrar detalles de un consejo
+    @GetMapping("/advice-detail/{id}")
+    public String showAdviceDetail(@PathVariable Long id, Model model) {
+        Optional<Consejo> optionalConsejo = consejoService.findById(id);
+        if (optionalConsejo.isPresent()) {
+            model.addAttribute("consejo", optionalConsejo.get());
+            return "advice-detail";
+        } else {
+            return "error"; 
+        }
+    }
+
+    // --- 1. BORRAR CONSEJO ---
+    @PostMapping("/advice-delete/{id}")
+    public String deleteAdvice(@PathVariable Long id, HttpServletRequest request) {
+        Principal principal = request.getUserPrincipal();
+        if (principal != null) {
+            Optional<Consejo> consejo = consejoService.findById(id);
+            
+            // Comprobamos que el consejo existe y que el usuario logueado es el dueño
+            if (consejo.isPresent() && consejo.get().getSeller().getEmail().equals(principal.getName())) {
+                consejoService.deleteById(id);
+            }
+        }
+        return "redirect:/profile-view";
+    }
+
+    // --- 2. MOSTRAR PANTALLA DE EDITAR ---
+    @GetMapping("/advice-edit/{id}")
+    public String showEditForm(@PathVariable Long id, Model model, HttpServletRequest request, org.springframework.security.web.csrf.CsrfToken csrfToken) {
+        Principal principal = request.getUserPrincipal();
+        if (principal != null) {
+            Optional<Consejo> consejo = consejoService.findById(id);
+            
+            // Solo dejamos entrar a la pantalla de edición si es el dueño
+            if (consejo.isPresent() && consejo.get().getSeller().getEmail().equals(principal.getName())) {
+                model.addAttribute("consejo", consejo.get());
+                model.addAttribute("_csrf", csrfToken);
+                return "advice-edit";
+            }
+        }
+        return "redirect:/profile-view";
+    }
+
+    // --- 3. GUARDAR LOS CAMBIOS EDITADOS ---
+    // --- 3. GUARDAR LOS CAMBIOS EDITADOS ---
+    @PostMapping("/advice-edit/{id}")
+    public String processEditForm(@PathVariable Long id, Consejo consejoDetalles, 
+                                  @RequestParam("imageFile") MultipartFile imageFile, 
+                                  HttpServletRequest request) throws IOException {
+        Principal principal = request.getUserPrincipal();
+        if (principal != null) {
+            Optional<Consejo> consejoOpcional = consejoService.findById(id);
+            
+            if (consejoOpcional.isPresent() && consejoOpcional.get().getSeller().getEmail().equals(principal.getName())) {
+                Consejo consejoExistente = consejoOpcional.get();
+                
+                // Actualizamos los textos y precios
+                consejoExistente.setTitle(consejoDetalles.getTitle());
+                consejoExistente.setCategory(consejoDetalles.getCategory());
+                consejoExistente.setPrice(consejoDetalles.getPrice());
+                
+                // AQUÍ ESTÁ EL CAMBIO: Usamos setSecretText y getSecretText
+                consejoExistente.setSecretText(consejoDetalles.getSecretText()); 
+
+                // Si el usuario subió una imagen nueva, la sobrescribimos
+                if (!imageFile.isEmpty()) {
+                    consejoExistente.setImageBytes(imageFile.getBytes());
+                }
+
+                // Guardamos en BBDD
+                consejoService.saveConsejo(consejoExistente);
+            }
+        }
+        return "redirect:/profile-view";
+    }
 }
