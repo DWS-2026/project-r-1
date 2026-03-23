@@ -17,11 +17,15 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-@Bean
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorize -> authorize
                 // Añadimos las rutas de las imágenes de la BBDD y la vista de detalles
                 .requestMatchers("/", "/registro", "/error", "/register", "/css/**", "/js/**", "/image/**", "/advice/*/image", "/advice-detail/**").permitAll()
+                
+                // Zona exclusiva para el Administrador
+                .requestMatchers("/admin/**").hasRole("ADMIN") // <--- NUEVO
+                
                 .anyRequest().authenticated()
         );
 

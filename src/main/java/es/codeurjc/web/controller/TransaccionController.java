@@ -62,7 +62,15 @@ public class TransaccionController {
     }
 
     @GetMapping("/transaction-view")
-    public String showTransactions() {
+    public String showTransactions(Model model, Principal principal) {
+        if (principal == null) return "redirect:/login";
+
+        // Buscamos al usuario logueado
+        Usuario buyer = usuarioRepository.findByEmail(principal.getName()).orElseThrow();
+        
+        // Buscamos sus compras
+        model.addAttribute("transactions", transaccionService.findByBuyer(buyer));
+        
         return "transaction-view";
     }
 }
