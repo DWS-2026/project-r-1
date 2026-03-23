@@ -20,6 +20,21 @@ public class Valoracion {
     // Rating score (e.g., from 1 to 5 stars)
     private int score;
 
+    private String title;
+
+    // Actualiza tu constructor para que incluya el title:
+    public Valoracion(Usuario author, Consejo consejo, int score, String title, String comment) {
+        this.author = author;
+        this.consejo = consejo;
+        this.score = score;
+        this.title = title;
+        this.comment = comment;
+    }
+
+    // Añade los getters y setters del title:
+    public String getTitle() { return title; }
+    public void setTitle(String title) { this.title = title; }
+
     // Text of the review
     @Column(columnDefinition = "TEXT")
     private String comment;
