@@ -130,7 +130,7 @@ En este caso no se ha cambiado respecto a la anterior parte.
 
 #### **Credenciales de prueba**
 - **Usuario Admin**: correo: `admin@admin.com`, contraseña: `pass`
-- **Usuario Registrado**: Para usar un usuario registrado simplemente registrate con cualquier par de credenciales.
+- **Usuario Registrado**: correo: `fermin@urjc.es`, contraseña: `pass`
 
 ### **Diagrama de Entidades de Base de Datos**
 
