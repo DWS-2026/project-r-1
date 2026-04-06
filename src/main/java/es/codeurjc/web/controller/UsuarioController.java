@@ -18,13 +18,13 @@ import java.security.Principal;
 
 @Controller
 public class UsuarioController {
-    
+
     @Autowired
     private org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
-    
+
     @Autowired
     private UsuarioService usuarioService;
-    
+
     @Autowired
     private UsuarioRepository usuarioRepository;
 
@@ -37,38 +37,45 @@ public class UsuarioController {
     @GetMapping("/register")
     public String mostrarRegistro(Model model, CsrfToken csrfToken) {
         model.addAttribute("_csrf", csrfToken);
-        return "register"; 
+        return "register";
     }
 
     @GetMapping("/login")
     public String mostrarLogin(Model model, CsrfToken csrfToken) {
         model.addAttribute("_csrf", csrfToken);
-        return "login"; 
+        return "login";
     }
 
     @PostMapping("/registro")
-    public String registrarUsuario(Model model, Usuario usuario) {
+    public String registrarUsuario(Model model, Usuario usuario, CsrfToken csrfToken) {
         if (!usuarioService.registrarNuevoUsuario(usuario)) {
-            return "error";
+            // Añadimos el mensaje de error al modelo
+            model.addAttribute("errorMsg",
+                    "Ese correo electrónico ya está en uso. Por favor, utiliza otro o inicia sesión.");
+            // Le volvemos a pasar el token de seguridad porque vamos a recargar el
+            // formulario
+            model.addAttribute("_csrf", csrfToken);
+
+            return "register"; // Volvemos a mostrar la página de registro
         }
-        return "redirect:/"; 
+        return "redirect:/"; // Si todo va bien, va al inicio
     }
 
     @GetMapping("/profile-view")
     public String profileView(Model model, HttpServletRequest request, CsrfToken csrfToken) { // <-- AÑADIDO CsrfToken
         Principal principal = request.getUserPrincipal();
-        
+
         if (principal != null) {
             Usuario user = usuarioRepository.findByEmail(principal.getName()).orElseThrow();
-            
+
             model.addAttribute("userProfile", user);
             model.addAttribute("sellingAdvices", consejoService.findBySeller(user));
             model.addAttribute("purchasedTransactions", transaccionService.findByBuyer(user));
-            
+
             // Pasamos el token de seguridad a la plantilla para el botón de Borrar
             model.addAttribute("_csrf", csrfToken); // <-- AÑADIDO
         }
-        
+
         return "profile-view";
     }
 
@@ -87,28 +94,48 @@ public class UsuarioController {
 
     // --- 2. GUARDAR LOS CAMBIOS DEL PERFIL ---
     @PostMapping("/profile-edit")
-    public String processProfileEdit(@RequestParam String nombre, 
-                                     @RequestParam(required = false) String password,
-                                     @RequestParam(required = false) String confirmPassword,
-                                     HttpServletRequest request) {
+    public String processProfileEdit(@RequestParam String nombre,
+            @RequestParam(required = false) String password,
+            @RequestParam(required = false) String confirmPassword,
+            HttpServletRequest request) {
         Principal principal = request.getUserPrincipal();
-        
+
         if (principal != null) {
             Usuario user = usuarioRepository.findByEmail(principal.getName()).orElseThrow();
-            
+
             // Actualizamos el nombre de usuario
             user.setNombre(nombre);
-            
+
             // Comprobamos si ha escrito una contraseña nueva y si ambas coinciden
             if (password != null && !password.isEmpty() && password.equals(confirmPassword)) {
                 user.setContrasena(passwordEncoder.encode(password));
             }
-            
+
             // Guardamos el usuario actualizado en la base de datos
             usuarioRepository.save(user);
         }
-        
+
         return "redirect:/profile-view";
+    }
+
+    @PostMapping("/profile-delete")
+    public String deleteOwnAccount(jakarta.servlet.http.HttpServletRequest request) throws Exception {
+        java.security.Principal principal = request.getUserPrincipal();
+
+        if (principal != null) {
+            // 1. Buscamos quién es el usuario logueado
+            Usuario user = usuarioRepository.findByEmail(principal.getName()).orElseThrow();
+
+            // 2. Lo borramos de la base de datos (y gracias al CascadeType.ALL, se borra lo
+            // suyo)
+            usuarioRepository.delete(user);
+
+            // 3. Destruimos su sesión de Spring Security para expulsarlo
+            request.logout();
+        }
+
+        // 4. Lo mandamos a la página principal
+        return "redirect:/";
     }
 
 }

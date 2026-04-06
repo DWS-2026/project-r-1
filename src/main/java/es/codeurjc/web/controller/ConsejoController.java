@@ -151,4 +151,22 @@ public class ConsejoController {
         }
         return "redirect:/profile-view";
     }
+
+    @GetMapping("/advice-secret/{id}")
+    public String viewSecretContent(@PathVariable Long id, org.springframework.ui.Model model, java.security.Principal principal) {
+        // Redirigir al login si el usuario no ha iniciado sesión
+        if (principal == null) {
+            return "redirect:/login";
+        }
+
+        java.util.Optional<es.codeurjc.web.model.Consejo> consejoOpt = consejoService.findById(id);
+        
+        if (consejoOpt.isPresent()) {
+            model.addAttribute("consejo", consejoOpt.get());
+            return "advice-secret";
+        }
+        
+        // Si el consejo no existe, redirigimos al perfil
+        return "redirect:/profile-view";
+    }
 }

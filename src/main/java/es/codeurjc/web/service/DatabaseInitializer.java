@@ -46,15 +46,15 @@ public class DatabaseInitializer implements CommandLineRunner {
             usuarioRepository.save(buyer);
 
             // 2. Crear consejos de ejemplo
-            Consejo c1 = new Consejo("Cómo encontrar el amor", "Amor", 5.00, "El secreto es ser tú mismo y lavarte los dientes.", seller);
+            Consejo c1 = new Consejo("Cómo encontrar el amor", "Amor", 5.00, "El que come de todo no pasa hambre", seller);
             c1.setImageBytes(cargarImagen("static/image/rosa.jpg"));
             consejoRepository.save(c1);
 
-            Consejo c2 = new Consejo("Cómo hacerte rico", "Finanzas", 999.99, "Compra barato, vende caro. De nada.", seller);
+            Consejo c2 = new Consejo("Cómo hacerte rico", "Finanzas", 999.99, "Invierte en Bitcoin", seller);
             c2.setImageBytes(cargarImagen("static/image/stonkss.jpg"));
             consejoRepository.save(c2);
 
-            Consejo c3 = new Consejo("Aprobar DWS en 2026 😱 Real NO FAKE", "Estudios", 240.00, "Estudia las diapositivas y reza a Spring Boot.", admin);
+            Consejo c3 = new Consejo("Aprobar DWS en 2026 😱 Real NO FAKE", "Estudios", 240.00, "ESTUDIA CABRON!!!", admin);
             c3.setImageBytes(cargarImagen("static/image/nerd.png"));
             consejoRepository.save(c3);
 

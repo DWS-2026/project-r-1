@@ -12,15 +12,16 @@
             </div>
             <div class="card-body p-0">
                 <table class="table table-hover mb-0">
+                    
                     <thead class="table-light">
                         <tr>
                             <th>ID</th>
                             <th>Nombre</th>
                             <th>Email</th>
                             <th>Roles</th>
-                            <th class="text-center">Acciones</th>
-                        </tr>
+                            <th class="text-center">Acciones</th> </tr>
                     </thead>
+                    
                     <tbody>
                         {{#usersList}}
                         <tr>
@@ -34,6 +35,11 @@
                             </td>
                             <td class="text-center">
                                 <a href="/admin/user/{{id}}" class="btn btn-sm btn-primary">Inspeccionar Perfil</a>
+                                
+                                <form action="/admin/user-delete/{{id}}" method="POST" style="display:inline;" onsubmit="return confirm('¿Seguro que quieres BANEAR a este usuario? Se borrarán todos sus datos.');">
+                                    <input type="hidden" name="_csrf" value="{{_csrf.token}}"/>
+                                    <button type="submit" class="btn btn-sm btn-danger">Banear</button>
+                                </form>
                             </td>
                         </tr>
                         {{/usersList}}

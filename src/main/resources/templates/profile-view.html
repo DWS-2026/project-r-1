@@ -1,78 +1,92 @@
 {{>header}}
 
-    <div class="container mt-4">
-        
-        {{#userProfile}}
-        <div class="border p-3 mb-4 bg-light">
-            <div class="row align-items-center">
-                <div class="col-md-2 text-center">
-                    <img src="/image/avatar1.jpg" alt="Avatar" class="rounded-circle img-fluid border">
-                </div>
-                <div class="col-md-10">
-                    <h3>Hola, {{nombre}}</h3>
-                    <p>Email: {{email}}</p>
-                    <a href="/profile-edit" class="btn btn-primary btn-sm">Editar Perfil</a>
-                </div>
+<div class="container mt-4">
+
+    {{#userProfile}}
+    <div class="border p-3 mb-4 bg-light">
+        <div class="row align-items-center">
+            <div class="col-md-2 text-center">
+                <img src="/image/avatar1.jpg" alt="Avatar" class="rounded-circle img-fluid border">
+            </div>
+            <div class="col-md-10">
+                <h3>Hola, {{nombre}}</h3>
+                <p>Email: {{email}}</p>
+                <a href="/profile-edit" class="btn btn-primary btn-sm">Editar Perfil</a>
+            </div>
+            <div class="col-md-10 mt-2">
+                <form action="/logout" method="POST" style="display: inline;">
+                    <input type="hidden" name="_csrf" value="{{_csrf.token}}" />
+                    <button type="submit" class="btn btn-secondary btn-sm">Cerrar Sesión</button>
+                </form>
+
+                <form action="/profile-delete" method="POST" style="display: inline;"
+                    onsubmit="return confirm('¿Estás totalmente seguro? Esta acción borrará tu cuenta y todos tus datos para siempre.');">
+                    <input type="hidden" name="_csrf" value="{{_csrf.token}}" />
+                    <button type="submit" class="btn btn-danger btn-sm">Eliminar mi cuenta</button>
+                </form>
+
             </div>
         </div>
-        {{/userProfile}}
-
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h3>Mis Consejos en Venta</h3>
-            <a href="/advice-create" class="btn btn-success">+ Vender Nuevo Consejo</a>
-        </div>
-        
-        <table class="table table-bordered mb-5">
-            <thead>
-                <tr>
-                    <th>Título</th>
-                    <th>Precio</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                {{#sellingAdvices}}
-                <tr>
-                    <td>{{title}}</td>
-                    <td>{{price}} €</td>
-                    <td>
-                        <a href="/advice-edit/{{id}}" class="btn btn-warning btn-sm">Editar</a>
-                        <form action="/advice-delete/{{id}}" method="POST" style="display:inline;">
-                            <input type="hidden" name="_csrf" value="{{_csrf.token}}"/>
-                            <button type="submit" class="btn btn-danger btn-sm">Borrar</button>
-                        </form>
-                    </td>
-                </tr>
-                {{/sellingAdvices}}
-                
-                {{^sellingAdvices}}
-                <tr>
-                    <td colspan="3" class="text-center text-muted">No tienes consejos a la venta.</td>
-                </tr>
-                {{/sellingAdvices}}
-            </tbody>
-        </table>
-
-        <div class="d-flex justify-content-between align-items-center mb-3 mt-5">
-            <h3>Mis Compras Realizadas</h3>
-            <a href="/transaction-view" class="btn btn-info text-white">Ver Historial de Transacciones</a>
-        </div>        <ul class="list-group mb-5">
-            {{#purchasedTransactions}}
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-                <span>Consejo: <strong>{{consejo.title}}</strong></span>
-                <span class="badge bg-secondary">Comprado por {{priceAtPurchase}} €</span>
-                <div>
-                    <a href="/advice-detail/{{consejo.id}}" class="btn btn-sm btn-info">Ver contenido</a>
-                    <a href="/review-create/{{consejo.id}}" class="btn btn-sm btn-outline-primary">Valorar</a>
-                </div>
-            </li>
-            {{/purchasedTransactions}}
-            
-            {{^purchasedTransactions}}
-            <li class="list-group-item text-center text-muted">No has realizado ninguna compra todavía.</li>
-            {{/purchasedTransactions}}
-        </ul>
-
     </div>
+    {{/userProfile}}
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3>Mis Consejos en Venta</h3>
+        <a href="/advice-create" class="btn btn-success">+ Vender Nuevo Consejo</a>
+    </div>
+
+    <table class="table table-bordered mb-5">
+        <thead>
+            <tr>
+                <th>Título</th>
+                <th>Precio</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#sellingAdvices}}
+            <tr>
+                <td>{{title}}</td>
+                <td>{{price}} €</td>
+                <td>
+                    <a href="/advice-edit/{{id}}" class="btn btn-warning btn-sm">Editar</a>
+                    <form action="/advice-delete/{{id}}" method="POST" style="display:inline;">
+                        <input type="hidden" name="_csrf" value="{{_csrf.token}}" />
+                        <button type="submit" class="btn btn-danger btn-sm">Borrar</button>
+                    </form>
+                </td>
+            </tr>
+            {{/sellingAdvices}}
+
+            {{^sellingAdvices}}
+            <tr>
+                <td colspan="3" class="text-center text-muted">No tienes consejos a la venta.</td>
+            </tr>
+            {{/sellingAdvices}}
+        </tbody>
+    </table>
+
+    <div class="d-flex justify-content-between align-items-center mb-3 mt-5">
+        <h3>Mis Compras Realizadas</h3>
+        <a href="/transaction-view" class="btn btn-info text-white">Ver Historial de Transacciones</a>
+    </div>
+    <ul class="list-group mb-5">
+        {{#purchasedTransactions}}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <span>Consejo: <strong>{{consejo.title}}</strong></span>
+            <span class="badge bg-secondary">Comprado por {{priceAtPurchase}} €</span>
+            <div>
+                <a href="/advice-secret/{{consejo.id}}" class="btn btn-sm btn-info text-white">Ver contenido</a>
+                <a href="/review-create/{{consejo.id}}" class="btn btn-sm btn-outline-primary">Valorar</a>
+            </div>
+        </li>
+        {{/purchasedTransactions}}
+
+        {{^purchasedTransactions}}
+        <li class="list-group-item text-center text-muted">No has realizado ninguna compra todavía.</li>
+        {{/purchasedTransactions}}
+    </ul>
+
+</div>
 
 {{>footer}}

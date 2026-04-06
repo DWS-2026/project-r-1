@@ -1,29 +1,35 @@
 {{>header}}
 
-    <div class="container" style="max-width: 600px;">
-        <div class="border p-4 mb-5">
-            <h3 class="text-center">Crear Cuenta Nueva</h3>
-            <hr>
-            
-            <form action="/registro" method="post">
-                <p>Nombre:</p>
-                <input type="text" name="nombre" required/>
-                
-                <p>Email:</p>
-                <input type="email" name="email" required/>
-                
-                <p>Contraseña:</p>
-                <input type="password" name="contrasena" required/>
-                
-                <p>Foto de perfil:</p>
-                <input type="file" name="fotoPerfil"/>
-                
-                <input type="hidden" name="_csrf" value="{{_csrf.token}}"/>
+<div class="container" style="max-width: 600px;">
+    <div class="border p-4 mb-5">
+        <h3 class="text-center">Crear Cuenta Nueva</h3>
+        <hr>
 
-                <input type="submit" value="Registrarse" />
-            </form> 
+        {{#errorMsg}}
+            <div class="alert alert-danger text-center" role="alert">
+                {{errorMsg}}
+            </div>
+        {{/errorMsg}}
+        
+        <form action="/registro" method="post">
+            <p>Nombre:</p>
+            <input type="text" name="nombre" required />
+
+            <p>Email:</p>
+            <input type="email" name="email" required />
+
+            <p>Contraseña:</p>
+            <input type="password" name="contrasena" required />
+
+            <p>Foto de perfil:</p>
+            <input type="file" name="fotoPerfil" />
+
+            <input type="hidden" name="_csrf" value="{{_csrf.token}}" />
+
+            <input type="submit" value="Registrarse" />
+        </form>
 
 
 
-    
-{{>footer}}
+
+        {{>footer}}

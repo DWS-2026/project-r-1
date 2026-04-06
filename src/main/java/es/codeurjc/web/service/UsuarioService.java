@@ -22,7 +22,7 @@ public class UsuarioService {
             return false;
         }
 
-        // 2. Sobrescribimos la contraseña en texto plano por la versión encriptada
+        // 2. we encode the password before saving the user to the database, so that it's not stored in plain text
         usuario.setContrasena(passwordEncoder.encode(usuario.getContrasena()));
 
         usuarioRepository.save(usuario);

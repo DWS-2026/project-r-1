@@ -7,6 +7,9 @@ import jakarta.persistence.Id;
 import java.util.List;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.CascadeType;
+import java.util.ArrayList;
 
 @Entity
 public class Usuario {
@@ -20,12 +23,21 @@ public class Usuario {
     private String contrasena;
     // The profile picture will be handled later
 
-    // roles: a list of strings that represent the roles assigned to the user (e.g., "USER", "ADMIN")
+    // roles: a list of strings that represent the roles assigned to the user (e.g.,
+    // "USER", "ADMIN")
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> roles;
 
+    @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Consejo> consejos = new ArrayList<>();
+    @OneToMany(mappedBy = "buyer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Transaccion> compras = new ArrayList<>();
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Valoracion> valoraciones = new ArrayList<>();
+
     // Empty constructor required by JPA
-    public Usuario() {}
+    public Usuario() {
+    }
 
     public Usuario(String nombre, String email, String contrasena) {
         this.nombre = nombre;
@@ -35,18 +47,68 @@ public class Usuario {
         this.roles = List.of("USER");
     }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
-    public String getNombre() { return nombre; }
-    public void setNombre(String nombre) { this.nombre = nombre; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
+    public String getNombre() {
+        return nombre;
+    }
 
-    public String getContrasena() { return contrasena; }
-    public void setContrasena(String contrasena) { this.contrasena = contrasena; }
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
 
-    public List<String> getRoles() { return roles; }
-    public void setRoles(List<String> roles) { this.roles = roles; }
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getContrasena() {
+        return contrasena;
+    }
+
+    public void setContrasena(String contrasena) {
+        this.contrasena = contrasena;
+    }
+
+    public List<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<String> roles) {
+        this.roles = roles;
+    }
+
+    public List<Consejo> getConsejos() {
+        return consejos;
+    }
+
+    public void setConsejos(List<Consejo> consejos) {
+        this.consejos = consejos;
+    }
+
+    public List<Transaccion> getCompras() {
+        return compras;
+    }
+
+    public void setCompras(List<Transaccion> compras) {
+        this.compras = compras;
+    }
+
+    public List<Valoracion> getValoraciones() {
+        return valoraciones;
+    }
+
+    public void setValoraciones(List<Valoracion> valoraciones) {
+        this.valoraciones = valoraciones;
+    }
+
 }
