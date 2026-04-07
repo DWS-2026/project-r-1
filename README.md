@@ -96,8 +96,8 @@ Todas las tareas, código, etc realizadas por Fermín :)
 
 ## 🛠 **Práctica 2: Web con HTML generado en servidor**
 
-### **Vídeo de Demostración**
-📹 **[Enlace al vídeo en YouTube](https://www.youtube.com/watch?v=x91MPoITQ3I)**
+### **Vídeo**
+📹 **[Enlace al vídeo en YouTube](https://www.youtube.com/watch?v=NSw5s9LrXmY)**
 > Vídeo mostrando las principales funcionalidades de la aplicación web.
 
 ### **Navegación y Capturas de Pantalla**
