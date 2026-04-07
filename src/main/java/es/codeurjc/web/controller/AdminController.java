@@ -32,9 +32,9 @@ public class AdminController {
         return "admin"; // Llamará a admin.html
     }
 
-    // 2. Inspeccionar el perfil de un usuario concreto
+// 2. Inspeccionar el perfil de un usuario concreto
     @GetMapping("/user/{id}")
-    public String inspectUser(@PathVariable Long id, Model model) {
+    public String inspectUser(@PathVariable Long id, Model model, org.springframework.security.web.csrf.CsrfToken csrfToken) {
         Usuario userToInspect = usuarioRepository.findById(id).orElseThrow();
 
         // Le pasamos los datos del usuario inspeccionado a la plantilla del perfil
@@ -45,6 +45,9 @@ public class AdminController {
         // Añadimos una variable para que el HTML sepa que lo está viendo el admin
         // y oculte los botones de "Editar" o "Borrar" (ya que no es su perfil)
         model.addAttribute("isAdminInspecting", true);
+
+        // ¡AQUÍ ESTÁ LA MAGIA! Le pasamos el token para que Mustache no explote
+        model.addAttribute("_csrf", csrfToken);
 
         return "profile-view"; // ¡Reutilizamos tu diseño del perfil!
     }
