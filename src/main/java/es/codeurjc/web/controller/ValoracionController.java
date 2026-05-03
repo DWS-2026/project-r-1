@@ -4,7 +4,6 @@ import java.security.Principal;
 import java.util.Optional;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,7 +25,7 @@ public class ValoracionController {
     @Autowired private UsuarioService usuarioService;
 
     @GetMapping("/review-create/{consejoId}")
-    public String showCreateForm(@PathVariable Long consejoId, Model model, HttpServletRequest request, CsrfToken csrfToken) {
+    public String showCreateForm(@PathVariable Long consejoId, Model model, HttpServletRequest request) {
         Principal principal = request.getUserPrincipal();
         if (principal == null) return "redirect:/login";
 
@@ -39,7 +38,6 @@ public class ValoracionController {
         }
 
         model.addAttribute("consejo", consejo);
-        model.addAttribute("_csrf", csrfToken);
         return "review-create";
     }
 
@@ -53,13 +51,12 @@ public class ValoracionController {
     }
 
     @GetMapping("/review-edit/{id}")
-    public String showEditForm(@PathVariable Long id, Model model, HttpServletRequest request, CsrfToken csrfToken) {
+    public String showEditForm(@PathVariable Long id, Model model, HttpServletRequest request) {
         Principal principal = request.getUserPrincipal();
         if (principal != null) {
             Optional<Valoracion> v = valoracionService.findById(id);
             if (v.isPresent() && v.get().getAuthor().getEmail().equals(principal.getName())) {
                 model.addAttribute("review", v.get());
-                model.addAttribute("_csrf", csrfToken);
                 return "review-edit";
             }
         }

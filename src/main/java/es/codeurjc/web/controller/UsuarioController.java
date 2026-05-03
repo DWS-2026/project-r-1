@@ -3,7 +3,6 @@ package es.codeurjc.web.controller;
 import java.security.Principal;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,47 +26,42 @@ public class UsuarioController {
     private TransaccionService transaccionService;
 
     @GetMapping("/register")
-    public String mostrarRegistro(Model model, CsrfToken csrfToken) {
-        model.addAttribute("_csrf", csrfToken);
+    public String mostrarRegistro(Model model) {
         return "register";
     }
 
     @GetMapping("/login")
-    public String mostrarLogin(Model model, CsrfToken csrfToken) {
-        model.addAttribute("_csrf", csrfToken);
+    public String mostrarLogin(Model model) {
         return "login";
     }
 
     @PostMapping("/registro")
-    public String registrarUsuario(Model model, Usuario usuario, CsrfToken csrfToken) {
+    public String registrarUsuario(Model model, Usuario usuario) {
         if (!usuarioService.registrarNuevoUsuario(usuario)) {
             model.addAttribute("errorMsg", "Ese correo electrónico ya está en uso. Por favor, utiliza otro o inicia sesión.");
-            model.addAttribute("_csrf", csrfToken);
             return "register"; 
         }
         return "redirect:/"; 
     }
 
     @GetMapping("/profile-view")
-    public String profileView(Model model, HttpServletRequest request, CsrfToken csrfToken) { 
+    public String profileView(Model model, HttpServletRequest request) { 
         Principal principal = request.getUserPrincipal();
         if (principal != null) {
             Usuario user = usuarioService.findByEmail(principal.getName()).orElseThrow();
             model.addAttribute("userProfile", user);
             model.addAttribute("sellingAdvices", consejoService.findBySeller(user));
             model.addAttribute("purchasedTransactions", transaccionService.findByBuyer(user));
-            model.addAttribute("_csrf", csrfToken); 
         }
         return "profile-view";
     }
 
     @GetMapping("/profile-edit")
-    public String showProfileEditForm(Model model, HttpServletRequest request, CsrfToken csrfToken) {
+    public String showProfileEditForm(Model model, HttpServletRequest request) {
         Principal principal = request.getUserPrincipal();
         if (principal != null) {
             Usuario user = usuarioService.findByEmail(principal.getName()).orElseThrow();
             model.addAttribute("userProfile", user);
-            model.addAttribute("_csrf", csrfToken);
             return "profile-edit";
         }
         return "redirect:/login";

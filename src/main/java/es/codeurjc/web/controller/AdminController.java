@@ -26,20 +26,18 @@ public class AdminController {
     private TransaccionService transaccionService;
 
     @GetMapping("/users")
-    public String listUsers(Model model, org.springframework.security.web.csrf.CsrfToken csrfToken) {
+    public String listUsers(Model model) {
         model.addAttribute("usersList", usuarioService.findAll());
-        model.addAttribute("_csrf", csrfToken);
         return "admin";
     }
 
     @GetMapping("/user/{id}")
-    public String inspectUser(@PathVariable Long id, Model model, org.springframework.security.web.csrf.CsrfToken csrfToken) {
+    public String inspectUser(@PathVariable Long id, Model model) {
         Usuario userToInspect = usuarioService.findById(id).orElseThrow();
         model.addAttribute("userProfile", userToInspect);
         model.addAttribute("sellingAdvices", consejoService.findBySeller(userToInspect));
         model.addAttribute("purchasedTransactions", transaccionService.findByBuyer(userToInspect));
         model.addAttribute("isAdminInspecting", true);
-        model.addAttribute("_csrf", csrfToken);
         return "profile-view";
     }
 

@@ -45,8 +45,7 @@ public class ConsejoController {
     }
 
     @GetMapping("/advice-create")
-    public String adviceCreate(Model model, org.springframework.security.web.csrf.CsrfToken csrfToken) {
-        model.addAttribute("_csrf", csrfToken);
+    public String adviceCreate(Model model) {
         return "advice-create";
     }
 
@@ -70,13 +69,12 @@ public class ConsejoController {
     }
 
     @GetMapping("/advice-edit/{id}")
-    public String showEditForm(@PathVariable Long id, Model model, HttpServletRequest request, org.springframework.security.web.csrf.CsrfToken csrfToken) {
+    public String showEditForm(@PathVariable Long id, Model model, HttpServletRequest request) {
         Principal principal = request.getUserPrincipal();
         if (principal != null) {
             Optional<Consejo> consejo = consejoService.findById(id);
             if (consejo.isPresent() && consejo.get().getSeller().getEmail().equals(principal.getName())) {
                 model.addAttribute("consejo", consejo.get());
-                model.addAttribute("_csrf", csrfToken);
                 return "advice-edit";
             }
         }
