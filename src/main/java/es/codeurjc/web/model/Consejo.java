@@ -20,13 +20,25 @@ public class Consejo {
     @Column(columnDefinition = "TEXT")
     private String secretText;
 
-// ELIMINA la variable imagePath y pon esto en su lugar:
-    
     @Lob
     @Column(columnDefinition = "MEDIUMBLOB")
     private byte[] imageBytes;
 
-    // --- Asegúrate de actualizar el constructor para quitar imagePath ---
+    // --- NUEVOS CAMPOS PARA EL ARCHIVO EN DISCO ---
+    private String attachmentName; // Nombre original para mostrar al usuario
+    private String attachmentPath; // Ruta interna segura en el servidor
+
+    @ManyToOne
+    private Usuario seller;
+
+    @OneToMany(mappedBy = "consejo", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Transaccion> transactions = new ArrayList<>();
+
+    @OneToMany(mappedBy = "consejo", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Valoracion> reviews = new ArrayList<>();
+
+    protected Consejo() {}
+
     public Consejo(String title, String category, double price, String secretText, Usuario seller) {
         this.title = title;
         this.category = category;
@@ -35,32 +47,6 @@ public class Consejo {
         this.seller = seller;
     }
 
-    // --- Getters y Setters de la imagen ---
-    public byte[] getImageBytes() {
-        return imageBytes;
-    }
-
-    public void setImageBytes(byte[] imageBytes) {
-        this.imageBytes = imageBytes;
-    }
-    // --- Relationships ---
-
-    // Many advices can be sold by one user
-    @ManyToOne
-    private Usuario seller;
-
-    // One advice can have multiple transactions (purchases)
-    @OneToMany(mappedBy = "consejo", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Transaccion> transactions = new ArrayList<>();
-
-    // One advice can have multiple reviews
-    @OneToMany(mappedBy = "consejo", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Valoracion> reviews = new ArrayList<>();
-
-    // Empty constructor required by JPA
-    protected Consejo() {}
-
-    // Parameterized constructor
     public Consejo(String title, String category, double price, String secretText, String imagePath, Usuario seller) {
         this.title = title;
         this.category = category;
@@ -72,68 +58,36 @@ public class Consejo {
 
     // --- Getters and Setters ---
 
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public String getTitle() { return title; }
+    public void setTitle(String title) { this.title = title; }
 
-    public String getTitle() {
-        return title;
-    }
+    public String getCategory() { return category; }
+    public void setCategory(String category) { this.category = category; }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
+    public double getPrice() { return price; }
+    public void setPrice(double price) { this.price = price; }
 
-    public String getCategory() {
-        return category;
-    }
+    public String getSecretText() { return secretText; }
+    public void setSecretText(String secretText) { this.secretText = secretText; }
 
-    public void setCategory(String category) {
-        this.category = category;
-    }
+    public byte[] getImageBytes() { return imageBytes; }
+    public void setImageBytes(byte[] imageBytes) { this.imageBytes = imageBytes; }
 
-    public double getPrice() {
-        return price;
-    }
+    public String getAttachmentName() { return attachmentName; }
+    public void setAttachmentName(String attachmentName) { this.attachmentName = attachmentName; }
 
-    public void setPrice(double price) {
-        this.price = price;
-    }
+    public String getAttachmentPath() { return attachmentPath; }
+    public void setAttachmentPath(String attachmentPath) { this.attachmentPath = attachmentPath; }
 
-    public String getSecretText() {
-        return secretText;
-    }
+    public Usuario getSeller() { return seller; }
+    public void setSeller(Usuario seller) { this.seller = seller; }
 
-    public void setSecretText(String secretText) {
-        this.secretText = secretText;
-    }
+    public List<Transaccion> getTransactions() { return transactions; }
+    public void setTransactions(List<Transaccion> transactions) { this.transactions = transactions; }
 
-
-    public Usuario getSeller() {
-        return seller;
-    }
-
-    public void setSeller(Usuario seller) {
-        this.seller = seller;
-    }
-
-    public List<Transaccion> getTransactions() {
-        return transactions;
-    }
-
-    public void setTransactions(List<Transaccion> transactions) {
-        this.transactions = transactions;
-    }
-
-    public List<Valoracion> getReviews() {
-        return reviews;
-    }
-
-    public void setReviews(List<Valoracion> reviews) {
-        this.reviews = reviews;
-    }
+    public List<Valoracion> getReviews() { return reviews; }
+    public void setReviews(List<Valoracion> reviews) { this.reviews = reviews; }
 }

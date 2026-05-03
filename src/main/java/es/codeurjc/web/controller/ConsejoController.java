@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.core.io.Resource;
 import es.codeurjc.web.model.Consejo;
 import es.codeurjc.web.service.ConsejoService;
 
@@ -25,10 +26,11 @@ public class ConsejoController {
 
     @PostMapping("/advice-create")
     public String createAdvice(Consejo consejo, HttpServletRequest request, 
-                               @RequestParam("imageFile") MultipartFile imageFile) throws IOException {
+                               @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
+                               @RequestParam(value = "attachmentFile", required = false) MultipartFile attachmentFile) throws IOException {
         Principal principal = request.getUserPrincipal();
         if (principal != null) {
-            consejoService.createAdvice(consejo, principal.getName(), imageFile);
+            consejoService.createAdvice(consejo, principal.getName(), imageFile, attachmentFile);
         }
         return "redirect:/profile-view"; 
     }
@@ -40,6 +42,21 @@ public class ConsejoController {
             return ResponseEntity.ok()
                     .header(HttpHeaders.CONTENT_TYPE, "image/jpeg")
                     .body(consejo.get().getImageBytes());
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    // --- NUEVO: DESCARGAR ARCHIVO ADJUNTO FÍSICO ---
+    @GetMapping("/advice/{id}/attachment")
+    public ResponseEntity<Resource> downloadAttachment(@PathVariable Long id) {
+        Resource file = consejoService.getAttachmentResource(id);
+        Optional<Consejo> consejo = consejoService.findById(id);
+        
+        if (file != null && consejo.isPresent()) {
+            return ResponseEntity.ok()
+                    // La cabecera Content-Disposition: attachment fuerza al navegador a descargarlo con su nombre original
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + consejo.get().getAttachmentName() + "\"")
+                    .body(file);
         }
         return ResponseEntity.notFound().build();
     }
@@ -83,11 +100,12 @@ public class ConsejoController {
 
     @PostMapping("/advice-edit/{id}")
     public String processEditForm(@PathVariable Long id, Consejo consejoDetalles, 
-                                  @RequestParam("imageFile") MultipartFile imageFile, 
+                                  @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
+                                  @RequestParam(value = "attachmentFile", required = false) MultipartFile attachmentFile, 
                                   HttpServletRequest request) throws IOException {
         Principal principal = request.getUserPrincipal();
         if (principal != null) {
-            consejoService.updateAdvice(id, consejoDetalles, principal.getName(), imageFile);
+            consejoService.updateAdvice(id, consejoDetalles, principal.getName(), imageFile, attachmentFile);
         }
         return "redirect:/profile-view";
     }
