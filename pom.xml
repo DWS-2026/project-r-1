@@ -59,6 +59,13 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <!-- Nueva dependencia para autogenerar Swagger/OpenAPI -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.3.0</version> <!-- Usamos la versión 2.x que es compatible con Spring Boot 3 -->
+        </dependency>
     </dependencies>
 
     <build>
@@ -66,6 +73,26 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            
+            <!-- Plugin para generar físicamente el YAML de OpenAPI al empaquetar -->
+            <plugin>
+                <groupId>org.springdoc</groupId>
+                <artifactId>springdoc-openapi-maven-plugin</artifactId>
+                <version>1.4</version>
+                <executions>
+                    <execution>
+                        <phase>integration-test</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <apiDocsUrl>https://localhost:8443/v3/api-docs.yaml</apiDocsUrl>
+                    <outputFileName>api-docs.yaml</outputFileName>
+                    <outputDir>${project.basedir}/api-docs</outputDir>
+                </configuration>
             </plugin>
         </plugins>
     </build>
