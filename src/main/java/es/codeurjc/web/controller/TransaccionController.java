@@ -1,11 +1,7 @@
 package es.codeurjc.web.controller;
 
-import es.codeurjc.web.model.Consejo;
-import es.codeurjc.web.model.Transaccion;
-import es.codeurjc.web.model.Usuario;
-import es.codeurjc.web.service.ConsejoService;
-import es.codeurjc.web.service.TransaccionService;
-import es.codeurjc.web.repository.UsuarioRepository;
+import java.security.Principal;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
@@ -13,8 +9,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import java.security.Principal;
-import java.util.Optional;
+import es.codeurjc.web.model.Consejo;
+import es.codeurjc.web.model.Usuario;
+import es.codeurjc.web.service.ConsejoService;
+import es.codeurjc.web.service.TransaccionService;
+import es.codeurjc.web.service.UsuarioService;
 
 @Controller
 public class TransaccionController {
@@ -26,7 +25,7 @@ public class TransaccionController {
     private ConsejoService consejoService;
 
     @Autowired
-    private UsuarioRepository usuarioRepository;
+    private UsuarioService usuarioService;
 
     @GetMapping("/transaction-create/{id}")
     public String showPaymentGateway(@PathVariable Long id, Model model, CsrfToken csrfToken) {
@@ -43,34 +42,19 @@ public class TransaccionController {
     public String processPayment(@PathVariable Long id, Principal principal) {
         if (principal == null) return "redirect:/login";
 
-        Optional<Consejo> optionalConsejo = consejoService.findById(id);
-        Optional<Usuario> optionalUser = usuarioRepository.findByEmail(principal.getName());
-
-        if (optionalConsejo.isPresent() && optionalUser.isPresent()) {
-            Consejo consejo = optionalConsejo.get();
-            Usuario buyer = optionalUser.get();
-
-            if (consejo.getSeller() != null && consejo.getSeller().getId().equals(buyer.getId())) {
-                return "redirect:/profile-view"; 
-            }
-
-            Transaccion transaccion = new Transaccion(buyer, consejo, consejo.getPrice());
-            transaccionService.save(transaccion);
-            return "redirect:/transaction-view";
+        boolean success = transaccionService.processPayment(id, principal.getName());
+        if (!success) {
+            return "redirect:/profile-view"; 
         }
-        return "error";
+        return "redirect:/transaction-view";
     }
 
     @GetMapping("/transaction-view")
     public String showTransactions(Model model, Principal principal) {
         if (principal == null) return "redirect:/login";
 
-        // Buscamos al usuario logueado
-        Usuario buyer = usuarioRepository.findByEmail(principal.getName()).orElseThrow();
-        
-        // Buscamos sus compras
+        Usuario buyer = usuarioService.findByEmail(principal.getName()).orElseThrow();
         model.addAttribute("transactions", transaccionService.findByBuyer(buyer));
-        
         return "transaction-view";
     }
 }

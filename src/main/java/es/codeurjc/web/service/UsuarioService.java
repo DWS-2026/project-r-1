@@ -1,5 +1,7 @@
 package es.codeurjc.web.service;
 
+import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -12,20 +14,46 @@ public class UsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    // first we inject the PasswordEncoder bean defined in SecurityConfig to be able to encrypt passwords before saving them to the database
     @Autowired
     private PasswordEncoder passwordEncoder;
 
     public boolean registrarNuevoUsuario(Usuario usuario) {
-
-        if (usuarioRepository.findByEmail(usuario.getEmail()).isPresent()) { //first we check if the email is already registered
+        if (usuarioRepository.findByEmail(usuario.getEmail()).isPresent()) {
             return false;
         }
-
-        // 2. we encode the password before saving the user to the database, so that it's not stored in plain text
         usuario.setContrasena(passwordEncoder.encode(usuario.getContrasena()));
-
         usuarioRepository.save(usuario);
         return true;
+    }
+
+    public Optional<Usuario> findByEmail(String email) {
+        return usuarioRepository.findByEmail(email);
+    }
+
+    public Optional<Usuario> findById(Long id) {
+        return usuarioRepository.findById(id);
+    }
+
+    public List<Usuario> findAll() {
+        return usuarioRepository.findAll();
+    }
+
+    public void updateProfile(String email, String nombre, String password, String confirmPassword) {
+        Usuario user = usuarioRepository.findByEmail(email).orElseThrow();
+        user.setNombre(nombre);
+
+        if (password != null && !password.isEmpty() && password.equals(confirmPassword)) {
+            user.setContrasena(passwordEncoder.encode(password));
+        }
+        usuarioRepository.save(user);
+    }
+
+    public void deleteUserByEmail(String email) {
+        Usuario user = usuarioRepository.findByEmail(email).orElseThrow();
+        usuarioRepository.delete(user);
+    }
+
+    public void deleteUserById(Long id) {
+        usuarioRepository.deleteById(id);
     }
 }
