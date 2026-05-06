@@ -10,6 +10,7 @@ import es.codeurjc.web.model.Usuario;
 import es.codeurjc.web.model.Valoracion;
 import es.codeurjc.web.repository.ValoracionRepository;
 import es.codeurjc.web.dto.ValoracionDTO;
+import es.codeurjc.web.dto.ValoracionMapper;
 
 @Service
 public class ValoracionService {
@@ -23,18 +24,11 @@ public class ValoracionService {
     @Autowired
     private ConsejoService consejoService;
 
-    // --- Métodos de conversión a DTO ---
+    @Autowired
+    private ValoracionMapper valoracionMapper;
+
     public ValoracionDTO toDTO(Valoracion v) {
-        return new ValoracionDTO(
-                v.getId(),
-                v.getAuthor() != null ? v.getAuthor().getId() : null,
-                v.getAuthor() != null ? v.getAuthor().getNombre() : "Unknown",
-                v.getConsejo() != null ? v.getConsejo().getId() : null,
-                v.getConsejo() != null ? v.getConsejo().getTitle() : "Unknown",
-                v.getScore(),
-                v.getTitle(),
-                v.getComment()
-        );
+        return valoracionMapper.toDTO(v);
     }
 
     public void save(Valoracion valoracion) {
@@ -49,16 +43,16 @@ public class ValoracionService {
         return valoracionRepository.findByAuthorAndConsejo(author, consejo);
     }
 
-    // Nuevo método para soportar paginación en la API REST
     public Page<ValoracionDTO> findAll(Pageable pageable) {
-        return valoracionRepository.findAll(pageable).map(this::toDTO);
+        return valoracionRepository.findAll(pageable).map(valoracionMapper::toDTO);
     }
 
-    public void createReview(Long consejoId, String userEmail, String title, int score, String comment) {
+    // Cambiado para devolver el objeto creado para poder usar su ID en el Header Location del REST
+    public Valoracion createReview(Long consejoId, String userEmail, String title, int score, String comment) {
         Usuario user = usuarioService.findByEmail(userEmail).orElseThrow();
         Consejo consejo = consejoService.findById(consejoId).orElseThrow();
         Valoracion v = new Valoracion(user, consejo, score, title, comment);
-        valoracionRepository.save(v);
+        return valoracionRepository.save(v);
     }
 
     public boolean updateReview(Long id, String userEmail, String title, int score, String comment) {

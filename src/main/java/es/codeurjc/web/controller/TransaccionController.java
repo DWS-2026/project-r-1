@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import es.codeurjc.web.model.Consejo;
 import es.codeurjc.web.model.Usuario;
+import es.codeurjc.web.model.Transaccion;
 import es.codeurjc.web.service.ConsejoService;
 import es.codeurjc.web.service.TransaccionService;
 import es.codeurjc.web.service.UsuarioService;
@@ -40,8 +41,9 @@ public class TransaccionController {
     public String processPayment(@PathVariable Long id, Principal principal) {
         if (principal == null) return "redirect:/login";
 
-        boolean success = transaccionService.processPayment(id, principal.getName());
-        if (!success) {
+        // Ajustado para el nuevo valor de retorno del servicio
+        Transaccion success = transaccionService.processPayment(id, principal.getName());
+        if (success == null) {
             return "redirect:/profile-view"; 
         }
         return "redirect:/transaction-view";

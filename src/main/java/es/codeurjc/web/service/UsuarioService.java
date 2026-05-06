@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import es.codeurjc.web.model.Usuario;
 import es.codeurjc.web.repository.UsuarioRepository;
 import es.codeurjc.web.dto.UsuarioDTO;
+import es.codeurjc.web.dto.UsuarioMapper;
 
 @Service
 public class UsuarioService {
@@ -20,14 +21,11 @@ public class UsuarioService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    // --- Métodos de conversión a DTO ---
+    @Autowired
+    private UsuarioMapper usuarioMapper;
+
     public UsuarioDTO toDTO(Usuario usuario) {
-        return new UsuarioDTO(
-                usuario.getId(),
-                usuario.getNombre(),
-                usuario.getEmail(),
-                usuario.getRoles()
-        );
+        return usuarioMapper.toDTO(usuario);
     }
 
     public boolean registrarNuevoUsuario(Usuario usuario) {
@@ -51,9 +49,8 @@ public class UsuarioService {
         return usuarioRepository.findAll();
     }
 
-    // Nuevo método para soportar paginación en la API REST
     public Page<UsuarioDTO> findAll(Pageable pageable) {
-        return usuarioRepository.findAll(pageable).map(this::toDTO);
+        return usuarioRepository.findAll(pageable).map(usuarioMapper::toDTO);
     }
 
     public void updateProfile(String email, String nombre, String password, String confirmPassword) {

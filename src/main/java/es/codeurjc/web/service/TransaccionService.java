@@ -10,6 +10,7 @@ import es.codeurjc.web.model.Transaccion;
 import es.codeurjc.web.model.Usuario;
 import es.codeurjc.web.repository.TransaccionRepository;
 import es.codeurjc.web.dto.TransaccionDTO;
+import es.codeurjc.web.dto.TransaccionMapper;
 
 @Service
 public class TransaccionService {
@@ -23,17 +24,11 @@ public class TransaccionService {
     @Autowired
     private ConsejoService consejoService;
 
-    // --- Métodos de conversión a DTO ---
+    @Autowired
+    private TransaccionMapper transaccionMapper;
+
     public TransaccionDTO toDTO(Transaccion t) {
-        return new TransaccionDTO(
-                t.getId(),
-                t.getBuyer() != null ? t.getBuyer().getId() : null,
-                t.getBuyer() != null ? t.getBuyer().getNombre() : "Unknown",
-                t.getConsejo() != null ? t.getConsejo().getId() : null,
-                t.getConsejo() != null ? t.getConsejo().getTitle() : "Unknown",
-                t.getPriceAtPurchase(),
-                t.getPurchaseDate()
-        );
+        return transaccionMapper.toDTO(t);
     }
 
     public void save(Transaccion transaccion) {
@@ -44,21 +39,20 @@ public class TransaccionService {
         return transaccionRepository.findByBuyer(buyer);
     }
 
-    // Nuevo método para soportar paginación en la API REST
     public Page<TransaccionDTO> findAll(Pageable pageable) {
-        return transaccionRepository.findAll(pageable).map(this::toDTO);
+        return transaccionRepository.findAll(pageable).map(transaccionMapper::toDTO);
     }
 
-    public boolean processPayment(Long consejoId, String buyerEmail) {
+    // Cambiado de booleano a objeto para poder recuperar la ID y crear la cabecera Location en REST
+    public Transaccion processPayment(Long consejoId, String buyerEmail) {
         Usuario buyer = usuarioService.findByEmail(buyerEmail).orElseThrow();
         Consejo consejo = consejoService.findById(consejoId).orElseThrow();
 
         if (consejo.getSeller() != null && consejo.getSeller().getId().equals(buyer.getId())) {
-            return false; // El usuario no puede comprar su propio consejo
+            return null; // El usuario no puede comprar su propio consejo
         }
 
         Transaccion transaccion = new Transaccion(buyer, consejo, consejo.getPrice());
-        transaccionRepository.save(transaccion);
-        return true;
+        return transaccionRepository.save(transaccion);
     }
 }

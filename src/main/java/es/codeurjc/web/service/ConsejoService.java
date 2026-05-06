@@ -18,6 +18,7 @@ import es.codeurjc.web.model.Consejo;
 import es.codeurjc.web.model.Usuario;
 import es.codeurjc.web.repository.ConsejoRepository;
 import es.codeurjc.web.dto.ConsejoDTO;
+import es.codeurjc.web.dto.ConsejoMapper;
 
 @Service
 public class ConsejoService {
@@ -28,21 +29,14 @@ public class ConsejoService {
     @Autowired
     private UsuarioService usuarioService;
 
-    // Carpeta donde guardaremos físicamente los archivos
+    @Autowired
+    private ConsejoMapper consejoMapper;
+
     private static final String UPLOADS_FOLDER = "uploads";
 
-    // --- Métodos de conversión a DTO ---
+    // Reutilizamos el mapper automático
     public ConsejoDTO toDTO(Consejo consejo) {
-        return new ConsejoDTO(
-                consejo.getId(),
-                consejo.getTitle(),
-                consejo.getCategory(),
-                consejo.getPrice(),
-                consejo.getSecretText(),
-                consejo.getAttachmentName(),
-                consejo.getSeller() != null ? consejo.getSeller().getId() : null,
-                consejo.getSeller() != null ? consejo.getSeller().getNombre() : "Usuario Anónimo"
-        );
+        return consejoMapper.toDTO(consejo);
     }
 
     public void saveConsejo(Consejo consejo) {
@@ -53,9 +47,8 @@ public class ConsejoService {
         return consejoRepository.findAll(); 
     }
 
-    // Nuevo método para soportar paginación en la API REST
     public Page<ConsejoDTO> findAll(Pageable pageable) {
-        return consejoRepository.findAll(pageable).map(this::toDTO);
+        return consejoRepository.findAll(pageable).map(consejoMapper::toDTO);
     }
 
     public Optional<Consejo> findById(Long id) {
@@ -81,7 +74,6 @@ public class ConsejoService {
 
     public boolean deleteAdvice(Long id, String userEmail) {
         Optional<Consejo> consejo = consejoRepository.findById(id);
-        // IMPORTANTE: En el futuro permitiremos al ADMIN saltarse esta comprobación
         if (consejo.isPresent() && consejo.get().getSeller().getEmail().equals(userEmail)) {
             consejoRepository.deleteById(id);
             return true;
@@ -109,38 +101,31 @@ public class ConsejoService {
         return Optional.empty();
     }
 
-    // --- LÓGICA DE ALMACENAMIENTO EN DISCO ---
     private void handleAttachment(Consejo consejo, MultipartFile file) throws IOException {
         if (file != null && !file.isEmpty()) {
-            // Forzamos a que la ruta sea absoluta respecto a la raíz del proyecto
             Path folderPath = Paths.get(UPLOADS_FOLDER).toAbsolutePath();
-            Files.createDirectories(folderPath); // Crea la carpeta si no existe
+            Files.createDirectories(folderPath); 
             
             String originalName = file.getOriginalFilename();
             if (originalName == null || originalName.contains("..")) {
-                // Contramedida: Evita el Path Traversal
                 throw new SecurityException("Intento de Path Traversal detectado");
             }
             
-            // Saneamos el nombre original y le ponemos un UUID para que sea único
             String sanitizedName = originalName.replaceAll("[^a-zA-Z0-9\\.\\-]", "_");
             String uniqueName = UUID.randomUUID().toString() + "_" + sanitizedName;
             
             Path filePath = folderPath.resolve(uniqueName);
             file.transferTo(filePath.toFile());
             
-            // Guardamos el nombre original para el usuario y la ruta interna para nosotros
             consejo.setAttachmentName(originalName);
             consejo.setAttachmentPath(filePath.toString());
         }
     }
 
-    // --- LÓGICA DE DESCARGA DESDE DISCO ---
     public Resource getAttachmentResource(Long id) {
         try {
             Consejo consejo = consejoRepository.findById(id).orElseThrow();
             if (consejo.getAttachmentPath() != null) {
-                // Resolvemos la ruta absoluta para leer el fichero
                 Path path = Paths.get(consejo.getAttachmentPath()).toAbsolutePath();
                 Resource resource = new UrlResource(path.toUri());
                 if (resource.exists() || resource.isReadable()) {
@@ -148,7 +133,7 @@ public class ConsejoService {
                 }
             }
         } catch (Exception e) {
-            // Log del error omitido por simplicidad
+            // Ignorado por simplicidad
         }
         return null;
     }

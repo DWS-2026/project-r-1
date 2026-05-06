@@ -7,12 +7,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import jakarta.validation.Valid;
 
 import es.codeurjc.web.dto.ConsejoDTO;
+import es.codeurjc.web.dto.ConsejoMapper;
 import es.codeurjc.web.model.Consejo;
 import es.codeurjc.web.service.ConsejoService;
 
@@ -23,27 +27,22 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/api/v1/consejos")
-// Añadimos etiquetas para organizar visualmente la documentación HTML
 @Tag(name = "Consejos", description = "Operaciones relacionadas con los consejos puestos a la venta")
 public class ConsejoRestController {
 
     @Autowired
     private ConsejoService consejoService;
 
+    @Autowired
+    private ConsejoMapper consejoMapper;
+
     @Operation(summary = "Obtener el listado de consejos paginados")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Listado obtenido correctamente")
-    })
     @GetMapping("/")
     public Page<ConsejoDTO> getAllConsejos(Pageable pageable) {
         return consejoService.findAll(pageable);
     }
 
     @Operation(summary = "Obtener los detalles de un consejo específico por su ID")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Consejo encontrado"),
-        @ApiResponse(responseCode = "404", description = "No existe un consejo con el ID proporcionado")
-    })
     @GetMapping("/{id}")
     public ResponseEntity<ConsejoDTO> getConsejo(@PathVariable Long id) {
         Optional<Consejo> consejo = consejoService.findById(id);
@@ -55,10 +54,6 @@ public class ConsejoRestController {
     }
 
     @Operation(summary = "Descargar el fichero adjunto extra de un consejo")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Fichero descargado correctamente"),
-        @ApiResponse(responseCode = "404", description = "Fichero o consejo no encontrado")
-    })
     @GetMapping("/{id}/attachment")
     public ResponseEntity<Resource> downloadAttachmentRest(@PathVariable Long id) {
         Resource file = consejoService.getAttachmentResource(id);
@@ -78,41 +73,52 @@ public class ConsejoRestController {
         @ApiResponse(responseCode = "401", description = "El usuario no está autenticado"),
         @ApiResponse(responseCode = "400", description = "Faltan datos en la petición")
     })
-    @PostMapping("/")
-    public ResponseEntity<ConsejoDTO> createConsejo(@RequestBody Consejo consejo, Principal principal) {
+    // Cambiamos a consumes MULTIPART y DTO como entrada para cumplir la rúbrica
+    @PostMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ConsejoDTO> createConsejo(
+            @Valid @RequestPart("consejo") ConsejoDTO consejoDTO,
+            @RequestPart(value = "imageFile", required = false) MultipartFile imageFile,
+            @RequestPart(value = "attachmentFile", required = false) MultipartFile attachmentFile,
+            Principal principal) {
+        
         if (principal == null) {
             return ResponseEntity.status(401).build();
         }
 
         try {
-            Consejo savedConsejo = consejoService.createAdvice(consejo, principal.getName(), null, null);
-            ConsejoDTO dto = consejoService.toDTO(savedConsejo);
+            // Traducimos el DTO a Entidad antes de pasarlo al servicio
+            Consejo consejo = consejoMapper.toDomain(consejoDTO);
+            Consejo savedConsejo = consejoService.createAdvice(consejo, principal.getName(), imageFile, attachmentFile);
+            ConsejoDTO resultDto = consejoService.toDTO(savedConsejo);
 
             URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                     .path("/{id}")
                     .buildAndExpand(savedConsejo.getId())
                     .toUri();
 
-            return ResponseEntity.created(location).body(dto);
+            return ResponseEntity.created(location).body(resultDto);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
     }
 
     @Operation(summary = "Actualizar los textos de un consejo existente")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Consejo actualizado"),
-        @ApiResponse(responseCode = "401", description = "El usuario no está autenticado"),
-        @ApiResponse(responseCode = "404", description = "El consejo no existe o el usuario no es el dueño")
-    })
-    @PutMapping("/{id}")
-    public ResponseEntity<ConsejoDTO> updateConsejo(@PathVariable Long id, @RequestBody Consejo consejoActualizado, Principal principal) {
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ConsejoDTO> updateConsejo(
+            @PathVariable Long id, 
+            @Valid @RequestPart("consejo") ConsejoDTO consejoDTO,
+            @RequestPart(value = "imageFile", required = false) MultipartFile imageFile,
+            @RequestPart(value = "attachmentFile", required = false) MultipartFile attachmentFile,
+            Principal principal) {
+        
         if (principal == null) {
             return ResponseEntity.status(401).build();
         }
 
         try {
-            Optional<Consejo> consejoEditado = consejoService.updateAdvice(id, consejoActualizado, principal.getName(), null, null);
+            Consejo consejoActualizado = consejoMapper.toDomain(consejoDTO);
+            Optional<Consejo> consejoEditado = consejoService.updateAdvice(id, consejoActualizado, principal.getName(), imageFile, attachmentFile);
+            
             if (consejoEditado.isPresent()) {
                 return ResponseEntity.ok(consejoService.toDTO(consejoEditado.get()));
             } else {
@@ -124,11 +130,6 @@ public class ConsejoRestController {
     }
 
     @Operation(summary = "Eliminar un consejo del catálogo")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "204", description = "Consejo borrado exitosamente"),
-        @ApiResponse(responseCode = "401", description = "El usuario no está autenticado"),
-        @ApiResponse(responseCode = "404", description = "El consejo no existe o el usuario no es el dueño")
-    })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteConsejo(@PathVariable Long id, Principal principal) {
         if (principal == null) {

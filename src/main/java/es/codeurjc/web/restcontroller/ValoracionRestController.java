@@ -1,5 +1,6 @@
 package es.codeurjc.web.restcontroller;
 
+import java.net.URI;
 import java.security.Principal;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
 import es.codeurjc.web.dto.ValoracionDTO;
 import es.codeurjc.web.model.Valoracion;
 import es.codeurjc.web.service.ValoracionService;
@@ -38,8 +41,15 @@ public class ValoracionRestController {
         if (principal == null) return ResponseEntity.status(401).build();
 
         try {
-            valoracionService.createReview(consejoId, principal.getName(), valoracion.getTitle(), valoracion.getScore(), valoracion.getComment());
-            return ResponseEntity.status(201).build();
+            Valoracion v = valoracionService.createReview(consejoId, principal.getName(), valoracion.getTitle(), valoracion.getScore(), valoracion.getComment());
+            
+            // Añadida la cabecera Location que pedía la rúbrica
+            URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                    .path("/{id}")
+                    .buildAndExpand(v.getId())
+                    .toUri();
+                    
+            return ResponseEntity.created(location).build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
