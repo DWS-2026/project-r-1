@@ -170,6 +170,46 @@
                     }
                 },
                 {
+                    "name": "POST Crear Consejo BAD REQUEST (Prueba de Validación)",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{jwt_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "consejo",
+                                    "value": "{\n    \"title\": \"\",\n    \"category\": \"Estudios\",\n    \"price\": -5.00,\n    \"secretText\": \"\"\n}",
+                                    "contentType": "application/json",
+                                    "type": "text"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/consejos/",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "consejos",
+                                ""
+                            ]
+                        }
+                    }
+                },
+                {
                     "name": "DELETE Borrar Consejo (Auth JWT)",
                     "request": {
                         "auth": {
@@ -260,6 +300,44 @@
                             ]
                         }
                     }
+                },
+                {
+                    "name": "PUT Actualizar Usuario (Auth JWT)",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{jwt_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"nombre\": \"Fermin Editado\",\n    \"password\": \"nuevaPass\",\n    \"confirmPassword\": \"nuevaPass\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/usuarios/2",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "usuarios",
+                                "2"
+                            ]
+                        }
+                    }
                 }
             ]
         },
@@ -290,6 +368,55 @@
                                 "api",
                                 "v1",
                                 "transacciones",
+                                ""
+                            ],
+                            "query": [
+                                {
+                                    "key": "consejoId",
+                                    "value": "1"
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Valoraciones",
+            "item": [
+                {
+                    "name": "POST Crear Valoracion (Auth JWT)",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{jwt_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"title\": \"Muy buen consejo\",\n    \"score\": 9,\n    \"comment\": \"Me ha servido de mucha ayuda.\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/valoraciones/?consejoId=1",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "valoraciones",
                                 ""
                             ],
                             "query": [

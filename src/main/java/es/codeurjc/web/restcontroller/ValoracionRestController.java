@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import jakarta.validation.Valid;
 
 import es.codeurjc.web.dto.ValoracionDTO;
 import es.codeurjc.web.model.Valoracion;
@@ -37,13 +38,13 @@ public class ValoracionRestController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<Void> createValoracion(@RequestParam Long consejoId, @RequestBody Valoracion valoracion, Principal principal) {
+    // Cambiado Valoracion por ValoracionDTO y añadido @Valid
+    public ResponseEntity<Void> createValoracion(@RequestParam Long consejoId, @Valid @RequestBody ValoracionDTO valoracionDTO, Principal principal) {
         if (principal == null) return ResponseEntity.status(401).build();
 
         try {
-            Valoracion v = valoracionService.createReview(consejoId, principal.getName(), valoracion.getTitle(), valoracion.getScore(), valoracion.getComment());
+            Valoracion v = valoracionService.createReview(consejoId, principal.getName(), valoracionDTO.title(), valoracionDTO.score(), valoracionDTO.comment());
             
-            // Añadida la cabecera Location que pedía la rúbrica
             URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                     .path("/{id}")
                     .buildAndExpand(v.getId())
@@ -56,10 +57,11 @@ public class ValoracionRestController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateValoracion(@PathVariable Long id, @RequestBody Valoracion valoracion, Principal principal) {
+    // Cambiado Valoracion por ValoracionDTO y añadido @Valid
+    public ResponseEntity<Void> updateValoracion(@PathVariable Long id, @Valid @RequestBody ValoracionDTO valoracionDTO, Principal principal) {
         if (principal == null) return ResponseEntity.status(401).build();
 
-        boolean updated = valoracionService.updateReview(id, principal.getName(), valoracion.getTitle(), valoracion.getScore(), valoracion.getComment());
+        boolean updated = valoracionService.updateReview(id, principal.getName(), valoracionDTO.title(), valoracionDTO.score(), valoracionDTO.comment());
         if (updated) {
             return ResponseEntity.ok().build();
         } else {

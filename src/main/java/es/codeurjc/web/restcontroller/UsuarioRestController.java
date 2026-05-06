@@ -7,7 +7,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
+
 import es.codeurjc.web.dto.UsuarioDTO;
+import es.codeurjc.web.dto.UsuarioUpdateDTO;
 import es.codeurjc.web.model.Usuario;
 import es.codeurjc.web.service.UsuarioService;
 
@@ -34,13 +37,15 @@ public class UsuarioRestController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UsuarioDTO> updateUsuario(@PathVariable Long id, @RequestBody Usuario datosActualizados, Principal principal) {
+    // Cambiado Usuario por UsuarioUpdateDTO y añadido @Valid
+    public ResponseEntity<UsuarioDTO> updateUsuario(@PathVariable Long id, @Valid @RequestBody UsuarioUpdateDTO datosActualizados, Principal principal) {
         if (principal == null) return ResponseEntity.status(401).build();
 
         Optional<Usuario> usuarioEnBBDD = usuarioService.findById(id);
         
         if (usuarioEnBBDD.isPresent() && usuarioEnBBDD.get().getEmail().equals(principal.getName())) {
-            usuarioService.updateProfile(principal.getName(), datosActualizados.getNombre(), datosActualizados.getContrasena(), datosActualizados.getContrasena());
+            usuarioService.updateProfile(principal.getName(), datosActualizados.nombre(), datosActualizados.password(), datosActualizados.confirmPassword());
+            
             // Recargamos para devolver el DTO actualizado
             Usuario actualizado = usuarioService.findByEmail(principal.getName()).get();
             return ResponseEntity.ok(usuarioService.toDTO(actualizado));
