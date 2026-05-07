@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Documentación API REST - Buy A Brainwave</title>
+  <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui.css" />
+  <style>
+    body { margin: 0; padding: 0; font-family: sans-serif; }
+    .local-warning {
+      display: none;
+      background-color: #ffe066;
+      color: #333;
+      padding: 15px;
+      text-align: center;
+      border-bottom: 2px solid #e6c200;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="local-warning" class="local-warning">
+    ⚠️ <strong>Aviso de Seguridad del Navegador (CORS)</strong><br>
+    Has abierto este archivo de forma local (<code>file:///</code>). Los navegadores bloquean la lectura del archivo <code>api-docs.yaml</code> por seguridad.<br>
+    Para ver la documentación correctamente, utiliza la extensión <b>Live Server</b> de VS Code o súbelo a GitHub y ábrelo usando el enlace de <b>GitHack</b> del README.
+  </div>
+
+  <div id="swagger-ui"></div>
+  
+  <script src="https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui-bundle.js" crossorigin></script>
+  
+  <script>
+    // Mostrar el aviso si detectamos que se ha abierto desde el disco duro
+    if (window.location.protocol === 'file:') {
+        document.getElementById('local-warning').style.display = 'block';
+    }
+
+    // Inicializamos Swagger apuntando a tu YAML local
+    window.onload = () => {
+      window.ui = SwaggerUIBundle({
+        url: 'api-docs.yaml',
+        dom_id: '#swagger-ui',
+      });
+    };
+  </script>
+</body>
+</html>

@@ -24,8 +24,8 @@ public class Transaccion {
     // Stores the price at the moment of purchase, in case the seller changes it later
     private double priceAtPurchase;
 
-    // Empty constructor required by JPA
-    protected Transaccion() {}
+    // AHORA ES PUBLIC PARA QUE MAPSTRUCT NO FALLE
+    public Transaccion() {}
 
     public Transaccion(Usuario buyer, Consejo consejo, double priceAtPurchase) {
         this.buyer = buyer;

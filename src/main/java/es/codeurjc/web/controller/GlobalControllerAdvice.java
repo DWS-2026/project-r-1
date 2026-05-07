@@ -7,7 +7,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.ui.Model;
 import org.springframework.security.web.csrf.CsrfToken;
 
-@ControllerAdvice
+// Restringimos el Advice solo a este paquete para evitar que rompa el controlador interno de OpenAPI
+@ControllerAdvice(basePackages = "es.codeurjc.web.controller")
 public class GlobalControllerAdvice {
 
     @ModelAttribute

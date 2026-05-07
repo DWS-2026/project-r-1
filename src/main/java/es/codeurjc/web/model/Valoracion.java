@@ -39,8 +39,8 @@ public class Valoracion {
     @Column(columnDefinition = "TEXT")
     private String comment;
 
-    // Empty constructor required by JPA
-    protected Valoracion() {}
+    // AHORA ES PUBLIC PARA QUE MAPSTRUCT NO FALLE
+    public Valoracion() {}
 
     public Valoracion(Usuario author, Consejo consejo, int score, String comment) {
         this.author = author;

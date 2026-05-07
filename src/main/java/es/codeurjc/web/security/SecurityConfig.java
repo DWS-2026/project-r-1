@@ -67,7 +67,8 @@ public class SecurityConfig {
     @Order(2)
     public SecurityFilterChain webFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/", "/registro", "/error", "/register", "/css/**", "/js/**", "/image/**", "/advice/*/image", "/advice-detail/**").permitAll()
+                // Añadidas explícitamente las rutas exactas de la documentación OpenAPI/Swagger para acceso libre
+                .requestMatchers("/", "/registro", "/error", "/register", "/css/**", "/js/**", "/image/**", "/advice/*/image", "/advice-detail/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN") 
                 .anyRequest().authenticated()
         );

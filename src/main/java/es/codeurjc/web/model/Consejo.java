@@ -37,7 +37,8 @@ public class Consejo {
     @OneToMany(mappedBy = "consejo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Valoracion> reviews = new ArrayList<>();
 
-    protected Consejo() {}
+    // AHORA ES PUBLIC PARA QUE MAPSTRUCT NO FALLE
+    public Consejo() {}
 
     public Consejo(String title, String category, double price, String secretText, Usuario seller) {
         this.title = title;

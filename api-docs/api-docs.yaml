@@ -1,0 +1,591 @@
+openapi: 3.1.0
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- url: https://localhost:8443
+  description: Generated server url
+tags:
+- name: Consejos
+  description: Operaciones relacionadas con los consejos puestos a la venta
+paths:
+  /api/v1/valoraciones/{id}:
+    get:
+      tags:
+      - valoracion-rest-controller
+      operationId: getValoracion
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ValoracionDTO"
+    put:
+      tags:
+      - valoracion-rest-controller
+      operationId: updateValoracion
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ValoracionDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+    delete:
+      tags:
+      - valoracion-rest-controller
+      operationId: deleteValoracion
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+  /api/v1/usuarios/{id}:
+    get:
+      tags:
+      - usuario-rest-controller
+      operationId: getUsuario
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UsuarioDTO"
+    put:
+      tags:
+      - usuario-rest-controller
+      operationId: updateUsuario
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UsuarioUpdateDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UsuarioDTO"
+    delete:
+      tags:
+      - usuario-rest-controller
+      operationId: deleteUsuario
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+  /api/v1/consejos/{id}:
+    get:
+      tags:
+      - Consejos
+      summary: Obtener los detalles de un consejo específico por su ID
+      operationId: getConsejo
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ConsejoDTO"
+    put:
+      tags:
+      - Consejos
+      summary: Actualizar los textos de un consejo existente
+      operationId: updateConsejo
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                consejo:
+                  $ref: "#/components/schemas/ConsejoDTO"
+                imageFile:
+                  type: string
+                  format: binary
+                attachmentFile:
+                  type: string
+                  format: binary
+              required:
+              - consejo
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ConsejoDTO"
+    delete:
+      tags:
+      - Consejos
+      summary: Eliminar un consejo del catálogo
+      operationId: deleteConsejo
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+  /api/v1/valoraciones/:
+    get:
+      tags:
+      - valoracion-rest-controller
+      operationId: getAllValoraciones
+      parameters:
+      - name: pageable
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/Pageable"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PagedModelValoracionDTO"
+    post:
+      tags:
+      - valoracion-rest-controller
+      operationId: createValoracion
+      parameters:
+      - name: consejoId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ValoracionDTO"
+        required: true
+      responses:
+        "200":
+          description: OK
+  /api/v1/transacciones/:
+    get:
+      tags:
+      - transaccion-rest-controller
+      operationId: getAllTransacciones
+      parameters:
+      - name: pageable
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/Pageable"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PagedModelTransaccionDTO"
+    post:
+      tags:
+      - transaccion-rest-controller
+      operationId: createTransaccion
+      parameters:
+      - name: consejoId
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+  /api/v1/consejos/:
+    get:
+      tags:
+      - Consejos
+      summary: Obtener el listado de consejos paginados
+      operationId: getAllConsejos
+      parameters:
+      - name: pageable
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/Pageable"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PagedModelConsejoDTO"
+    post:
+      tags:
+      - Consejos
+      summary: Crear un nuevo consejo para poner a la venta
+      operationId: createConsejo
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                consejo:
+                  $ref: "#/components/schemas/ConsejoDTO"
+                imageFile:
+                  type: string
+                  format: binary
+                attachmentFile:
+                  type: string
+                  format: binary
+              required:
+              - consejo
+      responses:
+        "201":
+          description: Consejo creado exitosamente
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ConsejoDTO"
+        "401":
+          description: El usuario no está autenticado
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ConsejoDTO"
+        "400":
+          description: Faltan datos en la petición
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/ConsejoDTO"
+  /api/v1/auth/signup:
+    post:
+      tags:
+      - auth-rest-controller
+      operationId: signup
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SignupRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+  /api/v1/auth/login:
+    post:
+      tags:
+      - auth-rest-controller
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+  /api/v1/usuarios/:
+    get:
+      tags:
+      - usuario-rest-controller
+      operationId: getAllUsuarios
+      parameters:
+      - name: pageable
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/Pageable"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PagedModelUsuarioDTO"
+  /api/v1/consejos/{id}/attachment:
+    get:
+      tags:
+      - Consejos
+      summary: Descargar el fichero adjunto extra de un consejo
+      operationId: downloadAttachmentRest
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+                format: binary
+components:
+  schemas:
+    ValoracionDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        authorId:
+          type: integer
+          format: int64
+        authorName:
+          type: string
+        consejoId:
+          type: integer
+          format: int64
+        consejoTitle:
+          type: string
+        score:
+          type: integer
+          format: int32
+          maximum: 10
+          minimum: 0
+        title:
+          type: string
+        comment:
+          type: string
+      required:
+      - comment
+      - title
+    UsuarioUpdateDTO:
+      type: object
+      properties:
+        nombre:
+          type: string
+        password:
+          type: string
+        confirmPassword:
+          type: string
+      required:
+      - nombre
+    UsuarioDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        nombre:
+          type: string
+        email:
+          type: string
+        roles:
+          type: array
+          items:
+            type: string
+    ConsejoDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        title:
+          type: string
+        category:
+          type: string
+        price:
+          type: number
+          format: double
+          minimum: 0
+        secretText:
+          type: string
+        attachmentName:
+          type: string
+        sellerId:
+          type: integer
+          format: int64
+        sellerName:
+          type: string
+      required:
+      - category
+      - price
+      - secretText
+      - title
+    SignupRequest:
+      type: object
+      properties:
+        nombre:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+      required:
+      - email
+      - nombre
+      - password
+    LoginRequest:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+    AuthResponse:
+      type: object
+      properties:
+        token:
+          type: string
+    Pageable:
+      type: object
+      properties:
+        page:
+          type: integer
+          format: int32
+          minimum: 0
+        size:
+          type: integer
+          format: int32
+          minimum: 1
+        sort:
+          type: array
+          items:
+            type: string
+    PageMetadata:
+      type: object
+      properties:
+        size:
+          type: integer
+          format: int64
+        number:
+          type: integer
+          format: int64
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int64
+    PagedModelValoracionDTO:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/ValoracionDTO"
+        page:
+          $ref: "#/components/schemas/PageMetadata"
+    PagedModelUsuarioDTO:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/UsuarioDTO"
+        page:
+          $ref: "#/components/schemas/PageMetadata"
+    PagedModelTransaccionDTO:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/TransaccionDTO"
+        page:
+          $ref: "#/components/schemas/PageMetadata"
+    TransaccionDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        buyerId:
+          type: integer
+          format: int64
+        buyerName:
+          type: string
+        consejoId:
+          type: integer
+          format: int64
+        consejoTitle:
+          type: string
+        priceAtPurchase:
+          type: number
+          format: double
+        purchaseDate:
+          type: string
+          format: date-time
+    PagedModelConsejoDTO:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: "#/components/schemas/ConsejoDTO"
+        page:
+          $ref: "#/components/schemas/PageMetadata"
