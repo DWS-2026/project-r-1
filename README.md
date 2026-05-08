@@ -148,7 +148,7 @@ Diagrama de clases de la aplicación con diferenciación por colores o secciones
 
 > [Descripción opcional del diagrama y relaciones principales]
 
-### **Participación de Miembros en la Práctica 1**
+### **Participación de Miembros en la Práctica 2**
 
 #### **Alumno 1 - [Fermín Aragonés González]**
 
@@ -176,20 +176,12 @@ Todas las tareas, código, etc realizadas por Fermín :)
 
 ### **Diagrama de Clases y Templates Actualizado**
 
-Diagrama actualizado incluyendo los @RestController y su relación con los @Service compartidos:
 
-![Diagrama de Clases Actualizado](images-Documentation/complete-classes-diagram.png)
+#### **Credenciales de prueba**
+- **Usuario Admin**: correo: `admin@admin.com`, contraseña: `pass`
+- **Usuario Registrado**: correo: `fermin@urjc.es`, contraseña: `pass`
 
-#### **Credenciales de Usuarios de Ejemplo**
-
-| Rol | Usuario | Contraseña |
-|:---|:---|:---|
-| Administrador | admin | admin123 |
-| Usuario Registrado | user1 | user123 |
-| Usuario Registrado | user2 | user123 |
-
-
-### **Participación de Miembros en la Práctica 1**
+### **Participación de Miembros en la Práctica 3**
 
 #### **Alumno 1 - [Fermín Aragonés González]**
 
