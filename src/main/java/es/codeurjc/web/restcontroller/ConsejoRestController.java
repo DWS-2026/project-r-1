@@ -53,6 +53,19 @@ public class ConsejoRestController {
         }
     }
 
+    // --- NUEVO: ENDPOINT DE DESCARGA DE IMAGEN PARA LA API REST ---
+    @Operation(summary = "Descargar la imagen de portada de un consejo")
+    @GetMapping("/{id}/image")
+    public ResponseEntity<byte[]> downloadImageRest(@PathVariable Long id) {
+        Optional<Consejo> consejo = consejoService.findById(id);
+        if (consejo.isPresent() && consejo.get().getImageBytes() != null) {
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_TYPE, "image/jpeg")
+                    .body(consejo.get().getImageBytes());
+        }
+        return ResponseEntity.notFound().build();
+    }
+
     @Operation(summary = "Descargar el fichero adjunto extra de un consejo")
     @GetMapping("/{id}/attachment")
     public ResponseEntity<Resource> downloadAttachmentRest(@PathVariable Long id) {
@@ -73,7 +86,6 @@ public class ConsejoRestController {
         @ApiResponse(responseCode = "401", description = "El usuario no está autenticado"),
         @ApiResponse(responseCode = "400", description = "Faltan datos en la petición")
     })
-    // Cambiamos a consumes MULTIPART y DTO como entrada para cumplir la rúbrica
     @PostMapping(value = "/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ConsejoDTO> createConsejo(
             @Valid @RequestPart("consejo") ConsejoDTO consejoDTO,
@@ -86,7 +98,6 @@ public class ConsejoRestController {
         }
 
         try {
-            // Traducimos el DTO a Entidad antes de pasarlo al servicio
             Consejo consejo = consejoMapper.toDomain(consejoDTO);
             Consejo savedConsejo = consejoService.createAdvice(consejo, principal.getName(), imageFile, attachmentFile);
             ConsejoDTO resultDto = consejoService.toDTO(savedConsejo);

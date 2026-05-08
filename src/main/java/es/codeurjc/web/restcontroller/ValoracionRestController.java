@@ -2,6 +2,7 @@ package es.codeurjc.web.restcontroller;
 
 import java.net.URI;
 import java.security.Principal;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -12,7 +13,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import jakarta.validation.Valid;
 
 import es.codeurjc.web.dto.ValoracionDTO;
+import es.codeurjc.web.model.Usuario;
 import es.codeurjc.web.model.Valoracion;
+import es.codeurjc.web.service.UsuarioService;
 import es.codeurjc.web.service.ValoracionService;
 
 @RestController
@@ -22,9 +25,23 @@ public class ValoracionRestController {
     @Autowired
     private ValoracionService valoracionService;
 
+    @Autowired
+    private UsuarioService usuarioService;
+
     @GetMapping("/")
     public Page<ValoracionDTO> getAllValoraciones(Pageable pageable) {
         return valoracionService.findAll(pageable);
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<List<ValoracionDTO>> getMyValoraciones(Principal principal) {
+        if (principal == null) {
+            return ResponseEntity.status(401).build();
+        }
+        Usuario autor = usuarioService.findByEmail(principal.getName()).orElseThrow();
+        List<ValoracionDTO> misValoraciones = valoracionService.findByAuthor(autor).stream()
+                .map(valoracionService::toDTO).toList();
+        return ResponseEntity.ok(misValoraciones);
     }
 
     @GetMapping("/{id}")

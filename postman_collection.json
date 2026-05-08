@@ -120,6 +120,26 @@
                     }
                 },
                 {
+                    "name": "GET Imagen de Consejo (Public)",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/consejos/1/image",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "consejos",
+                                "1",
+                                "image"
+                            ]
+                        }
+                    }
+                },
+                {
                     "name": "POST Crear Consejo (Auth JWT con Multipart)",
                     "request": {
                         "auth": {
@@ -165,6 +185,46 @@
                                 "v1",
                                 "consejos",
                                 ""
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "PUT Editar Consejo (Auth JWT con Multipart)",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{jwt_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "PUT",
+                        "header": [],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "consejo",
+                                    "value": "{\n    \"title\": \"Consejo Editado\",\n    \"category\": \"Estudios\",\n    \"price\": 15.00,\n    \"secretText\": \"Texto modificado.\"\n}",
+                                    "contentType": "application/json",
+                                    "type": "text"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/consejos/1",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "consejos",
+                                "1"
                             ]
                         }
                     }
@@ -338,6 +398,35 @@
                             ]
                         }
                     }
+                },
+                {
+                    "name": "DELETE Borrar Usuario (Auth JWT)",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{jwt_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/usuarios/2",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "usuarios",
+                                "2"
+                            ]
+                        }
+                    }
                 }
             ]
         },
@@ -375,6 +464,35 @@
                                     "key": "consejoId",
                                     "value": "1"
                                 }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "GET Mis Transacciones (Auth JWT)",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{jwt_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/transacciones/me",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "transacciones",
+                                "me"
                             ]
                         }
                     }
@@ -424,6 +542,35 @@
                                     "key": "consejoId",
                                     "value": "1"
                                 }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "GET Mis Valoraciones (Auth JWT)",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{jwt_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/valoraciones/me",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "valoraciones",
+                                "me"
                             ]
                         }
                     }

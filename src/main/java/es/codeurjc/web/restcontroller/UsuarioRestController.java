@@ -2,6 +2,7 @@ package es.codeurjc.web.restcontroller;
 
 import java.security.Principal;
 import java.util.Optional;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -55,16 +56,20 @@ public class UsuarioRestController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUsuario(@PathVariable Long id, Principal principal) {
+    public ResponseEntity<Void> deleteUsuario(@PathVariable Long id, Principal principal, HttpServletRequest request) {
         if (principal == null) return ResponseEntity.status(401).build();
 
         Optional<Usuario> usuarioEnBBDD = usuarioService.findById(id);
         
-        if (usuarioEnBBDD.isPresent() && usuarioEnBBDD.get().getEmail().equals(principal.getName())) {
-            usuarioService.deleteUserById(id);
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
+        if (usuarioEnBBDD.isPresent()) {
+            boolean isOwner = usuarioEnBBDD.get().getEmail().equals(principal.getName());
+            boolean isAdmin = request.isUserInRole("ROLE_ADMIN") || request.isUserInRole("ADMIN");
+
+            if (isOwner || isAdmin) {
+                usuarioService.deleteUserById(id);
+                return ResponseEntity.noContent().build();
+            }
         }
+        return ResponseEntity.notFound().build();
     }
 }
