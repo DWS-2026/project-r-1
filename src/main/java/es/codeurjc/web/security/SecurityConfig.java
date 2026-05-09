@@ -24,6 +24,10 @@ public class SecurityConfig {
     @Autowired
     private RestUnauthorizedHandler restUnauthorizedHandler;
 
+    // Inyectamos el handler para los 403 JSON
+    @Autowired
+    private RestAccessDeniedHandler restAccessDeniedHandler;
+
     @Autowired
     private JwtRequestFilter jwtRequestFilter;
 
@@ -43,10 +47,13 @@ public class SecurityConfig {
         
         http.securityMatcher("/api/v1/**"); 
         
-        http.exceptionHandling(handling -> handling.authenticationEntryPoint(restUnauthorizedHandler));
+        // Registramos el manejador de 403 Forbidden para la API
+        http.exceptionHandling(handling -> handling
+                .authenticationEntryPoint(restUnauthorizedHandler)
+                .accessDeniedHandler(restAccessDeniedHandler)
+        );
         
         http.authorizeHttpRequests(authorize -> authorize
-                // Endpoints de autenticación (Login Y Registro)
                 .requestMatchers(HttpMethod.POST, "/api/v1/auth/login", "/api/v1/auth/signup").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/v1/consejos/**", "/api/v1/valoraciones/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/v1/usuarios/").hasRole("ADMIN") 
@@ -67,7 +74,6 @@ public class SecurityConfig {
     @Order(2)
     public SecurityFilterChain webFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorize -> authorize
-                // Añadidas explícitamente las rutas exactas de la documentación OpenAPI/Swagger para acceso libre
                 .requestMatchers("/", "/registro", "/error", "/register", "/css/**", "/js/**", "/image/**", "/advice/*/image", "/advice-detail/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN") 
                 .anyRequest().authenticated()

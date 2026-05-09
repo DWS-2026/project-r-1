@@ -3,6 +3,7 @@ package es.codeurjc.web.restcontroller;
 import java.net.URI;
 import java.security.Principal;
 import java.util.Optional;
+import java.util.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -45,39 +46,38 @@ public class ConsejoRestController {
     @Operation(summary = "Obtener los detalles de un consejo específico por su ID")
     @GetMapping("/{id}")
     public ResponseEntity<ConsejoDTO> getConsejo(@PathVariable Long id) {
-        Optional<Consejo> consejo = consejoService.findById(id);
-        if (consejo.isPresent()) {
-            return ResponseEntity.ok(consejoService.toDTO(consejo.get()));
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        Consejo consejo = consejoService.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("El consejo con ID " + id + " no existe."));
+        return ResponseEntity.ok(consejoService.toDTO(consejo));
     }
 
-    // --- NUEVO: ENDPOINT DE DESCARGA DE IMAGEN PARA LA API REST ---
     @Operation(summary = "Descargar la imagen de portada de un consejo")
     @GetMapping("/{id}/image")
     public ResponseEntity<byte[]> downloadImageRest(@PathVariable Long id) {
-        Optional<Consejo> consejo = consejoService.findById(id);
-        if (consejo.isPresent() && consejo.get().getImageBytes() != null) {
+        Consejo consejo = consejoService.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("El consejo con ID " + id + " no existe."));
+                
+        if (consejo.getImageBytes() != null) {
             return ResponseEntity.ok()
                     .header(HttpHeaders.CONTENT_TYPE, "image/jpeg")
-                    .body(consejo.get().getImageBytes());
+                    .body(consejo.getImageBytes());
         }
-        return ResponseEntity.notFound().build();
+        throw new NoSuchElementException("Este consejo no tiene imagen de portada.");
     }
 
     @Operation(summary = "Descargar el fichero adjunto extra de un consejo")
     @GetMapping("/{id}/attachment")
     public ResponseEntity<Resource> downloadAttachmentRest(@PathVariable Long id) {
+        Consejo consejo = consejoService.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("El consejo con ID " + id + " no existe."));
+                
         Resource file = consejoService.getAttachmentResource(id);
-        Optional<Consejo> consejo = consejoService.findById(id);
-        
-        if (file != null && consejo.isPresent()) {
+        if (file != null) {
             return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + consejo.get().getAttachmentName() + "\"")
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + consejo.getAttachmentName() + "\"")
                     .body(file);
         }
-        return ResponseEntity.notFound().build();
+        throw new NoSuchElementException("Este consejo no tiene archivo adjunto.");
     }
 
     @Operation(summary = "Crear un nuevo consejo para poner a la venta")
@@ -109,7 +109,7 @@ public class ConsejoRestController {
 
             return ResponseEntity.created(location).body(resultDto);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
+            throw new IllegalArgumentException("Datos incorrectos al crear el consejo: " + e.getMessage());
         }
     }
 
@@ -128,15 +128,14 @@ public class ConsejoRestController {
 
         try {
             Consejo consejoActualizado = consejoMapper.toDomain(consejoDTO);
-            Optional<Consejo> consejoEditado = consejoService.updateAdvice(id, consejoActualizado, principal.getName(), imageFile, attachmentFile);
+            Consejo consejoEditado = consejoService.updateAdvice(id, consejoActualizado, principal.getName(), imageFile, attachmentFile)
+                    .orElseThrow(() -> new NoSuchElementException("Consejo no encontrado o no autorizado a editarlo"));
             
-            if (consejoEditado.isPresent()) {
-                return ResponseEntity.ok(consejoService.toDTO(consejoEditado.get()));
-            } else {
-                return ResponseEntity.notFound().build();
-            }
+            return ResponseEntity.ok(consejoService.toDTO(consejoEditado));
+        } catch (NoSuchElementException e) {
+            throw e; 
         } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
+            throw new IllegalArgumentException("Error al procesar la actualización de la imagen/archivo.");
         }
     }
 
@@ -151,7 +150,7 @@ public class ConsejoRestController {
         if (deleted) {
             return ResponseEntity.noContent().build();
         } else {
-            return ResponseEntity.notFound().build();
+            throw new NoSuchElementException("Consejo no encontrado o no tienes permisos para borrarlo.");
         }
     }
 }

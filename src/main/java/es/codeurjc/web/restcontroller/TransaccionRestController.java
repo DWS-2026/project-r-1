@@ -50,14 +50,14 @@ public class TransaccionRestController {
 
         Transaccion transaccion = transaccionService.processPayment(consejoId, principal.getName());
         if (transaccion != null) {
-            // Añadida la cabecera Location que pedía la rúbrica
             URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                     .path("/{id}")
                     .buildAndExpand(transaccion.getId())
                     .toUri();
             return ResponseEntity.created(location).build(); 
         } else {
-            return ResponseEntity.badRequest().build();
+            // Este error será atrapado por el RestValidationExceptionHandler mostrando un 400 en JSON
+            throw new IllegalArgumentException("Transacción inválida. Verifica que no estés comprando tu propio consejo.");
         }
     }
 }

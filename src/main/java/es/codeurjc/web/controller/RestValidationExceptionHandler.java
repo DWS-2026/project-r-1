@@ -9,9 +9,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
-// Esta clase "atrapa" los errores de validación (@Valid) de toda la API REST
-// y los formatea como un JSON limpio para que el cliente entienda qué falló.
 @RestControllerAdvice(basePackages = "es.codeurjc.web.restcontroller")
 public class RestValidationExceptionHandler {
 
@@ -26,5 +25,38 @@ public class RestValidationExceptionHandler {
         });
         
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+    }
+
+    // NUEVO: Atrapa peticiones a IDs que no existen y genera un JSON con el 404
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<Map<String, Object>> handleNotFound(NoSuchElementException ex) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("status", HttpStatus.NOT_FOUND.value());
+        response.put("error", "Not Found");
+        response.put("message", ex.getMessage());
+        
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    // NUEVO: Atrapa errores lógicos (ej. comprar tu propio consejo) y genera un JSON con el 400
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Map<String, Object>> handleBadRequest(IllegalArgumentException ex) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("status", HttpStatus.BAD_REQUEST.value());
+        response.put("error", "Bad Request");
+        response.put("message", ex.getMessage());
+        
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    // NUEVO: Comodín para atrapar cualquier error interno (500) y evitar que escupa HTML
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Map<String, Object>> handleGenericException(Exception ex) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        response.put("error", HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
+        response.put("message", ex.getMessage());
+        
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

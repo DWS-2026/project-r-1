@@ -4,6 +4,7 @@ import java.net.URI;
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
+import java.util.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -46,16 +47,12 @@ public class ValoracionRestController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ValoracionDTO> getValoracion(@PathVariable Long id) {
-        Optional<Valoracion> valoracion = valoracionService.findById(id);
-        if (valoracion.isPresent()) {
-            return ResponseEntity.ok(valoracionService.toDTO(valoracion.get()));
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        Valoracion valoracion = valoracionService.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("La valoración con ID " + id + " no existe."));
+        return ResponseEntity.ok(valoracionService.toDTO(valoracion));
     }
 
     @PostMapping("/")
-    // Cambiado Valoracion por ValoracionDTO y añadido @Valid
     public ResponseEntity<Void> createValoracion(@RequestParam Long consejoId, @Valid @RequestBody ValoracionDTO valoracionDTO, Principal principal) {
         if (principal == null) return ResponseEntity.status(401).build();
 
@@ -69,12 +66,11 @@ public class ValoracionRestController {
                     
             return ResponseEntity.created(location).build();
         } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
+            throw new IllegalArgumentException("No se ha podido procesar la valoración. Verifica que el consejo exista.");
         }
     }
 
     @PutMapping("/{id}")
-    // Cambiado Valoracion por ValoracionDTO y añadido @Valid
     public ResponseEntity<Void> updateValoracion(@PathVariable Long id, @Valid @RequestBody ValoracionDTO valoracionDTO, Principal principal) {
         if (principal == null) return ResponseEntity.status(401).build();
 
@@ -82,7 +78,7 @@ public class ValoracionRestController {
         if (updated) {
             return ResponseEntity.ok().build();
         } else {
-            return ResponseEntity.notFound().build();
+            throw new NoSuchElementException("Valoración no encontrada o no tienes permisos para editarla.");
         }
     }
 
@@ -94,7 +90,7 @@ public class ValoracionRestController {
         if (deleted) {
             return ResponseEntity.noContent().build();
         } else {
-            return ResponseEntity.notFound().build();
+            throw new NoSuchElementException("Valoración no encontrada o no tienes permisos para borrarla.");
         }
     }
 }

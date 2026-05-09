@@ -16,7 +16,7 @@
                             "script": {
                                 "exec": [
                                     "var jsonData = pm.response.json();",
-                                    "pm.environment.set(\"jwt_token\", jsonData.token);"
+                                    "pm.collectionVariables.set(\"jwt_token\", jsonData.token);"
                                 ],
                                 "type": "text/javascript"
                             }
@@ -225,46 +225,6 @@
                                 "v1",
                                 "consejos",
                                 "1"
-                            ]
-                        }
-                    }
-                },
-                {
-                    "name": "POST Crear Consejo BAD REQUEST (Prueba de Validación)",
-                    "request": {
-                        "auth": {
-                            "type": "bearer",
-                            "bearer": [
-                                {
-                                    "key": "token",
-                                    "value": "{{jwt_token}}",
-                                    "type": "string"
-                                }
-                            ]
-                        },
-                        "method": "POST",
-                        "header": [],
-                        "body": {
-                            "mode": "formdata",
-                            "formdata": [
-                                {
-                                    "key": "consejo",
-                                    "value": "{\n    \"title\": \"\",\n    \"category\": \"Estudios\",\n    \"price\": -5.00,\n    \"secretText\": \"\"\n}",
-                                    "contentType": "application/json",
-                                    "type": "text"
-                                }
-                            ]
-                        },
-                        "url": {
-                            "raw": "{{baseUrl}}/api/v1/consejos/",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "api",
-                                "v1",
-                                "consejos",
-                                ""
                             ]
                         }
                     }
@@ -574,6 +534,73 @@
                             ]
                         }
                     }
+                },
+                {
+                    "name": "PUT Editar Valoracion (Auth JWT)",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{jwt_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"title\": \"Consejo editado\",\n    \"score\": 5,\n    \"comment\": \"He cambiado de opinión tras usarlo más tiempo.\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/valoraciones/1",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "valoraciones",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "DELETE Borrar Valoracion (Auth JWT)",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{jwt_token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/valoraciones/1",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "v1",
+                                "valoraciones",
+                                "1"
+                            ]
+                        }
+                    }
                 }
             ]
         }
@@ -582,6 +609,11 @@
         {
             "key": "baseUrl",
             "value": "https://localhost:8443",
+            "type": "string"
+        },
+        {
+            "key": "jwt_token",
+            "value": "",
             "type": "string"
         }
     ]
