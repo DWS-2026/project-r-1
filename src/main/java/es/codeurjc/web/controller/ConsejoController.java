@@ -6,6 +6,7 @@ import java.util.Optional;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,13 +17,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.core.io.Resource;
 import es.codeurjc.web.model.Consejo;
+import es.codeurjc.web.model.Usuario;
 import es.codeurjc.web.service.ConsejoService;
+import es.codeurjc.web.service.UsuarioService;
 
 @Controller
 public class ConsejoController {
 
     @Autowired
     private ConsejoService consejoService;
+    
+    // Añadimos dependencia del servicio de usuario para las validaciones de acceso
+    @Autowired
+    private UsuarioService usuarioService;
 
     @PostMapping("/advice-create")
     public String createAdvice(Consejo consejo, HttpServletRequest request, 
@@ -46,17 +53,33 @@ public class ConsejoController {
         return ResponseEntity.notFound().build();
     }
 
-    // --- NUEVO: DESCARGAR ARCHIVO ADJUNTO FÍSICO ---
     @GetMapping("/advice/{id}/attachment")
-    public ResponseEntity<Resource> downloadAttachment(@PathVariable Long id) {
-        Resource file = consejoService.getAttachmentResource(id);
-        Optional<Consejo> consejo = consejoService.findById(id);
+    public ResponseEntity<Resource> downloadAttachment(@PathVariable Long id, HttpServletRequest request) {
+        Principal principal = request.getUserPrincipal();
+        if (principal == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
         
-        if (file != null && consejo.isPresent()) {
-            return ResponseEntity.ok()
-                    // La cabecera Content-Disposition: attachment fuerza al navegador a descargarlo con su nombre original
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + consejo.get().getAttachmentName() + "\"")
-                    .body(file);
+        Optional<Consejo> consejoOpt = consejoService.findById(id);
+        if (consejoOpt.isPresent()) {
+            Consejo consejo = consejoOpt.get();
+            Usuario user = usuarioService.findByEmail(principal.getName()).orElseThrow();
+            
+            // FIX: Validamos que el usuario tiene acceso al material (IDOR)
+            boolean isSeller = consejo.getSeller().getId().equals(user.getId());
+            boolean isAdmin = request.isUserInRole("ADMIN") || request.isUserInRole("ROLE_ADMIN");
+            boolean hasBought = user.getCompras().stream().anyMatch(t -> t.getConsejo().getId().equals(id));
+            
+            if (isSeller || isAdmin || hasBought) {
+                Resource file = consejoService.getAttachmentResource(id);
+                if (file != null) {
+                    return ResponseEntity.ok()
+                            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + consejo.getAttachmentName() + "\"")
+                            .body(file);
+                }
+            } else {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
         }
         return ResponseEntity.notFound().build();
     }
@@ -111,14 +134,27 @@ public class ConsejoController {
     }
 
     @GetMapping("/advice-secret/{id}")
-    public String viewSecretContent(@PathVariable Long id, Model model, Principal principal) {
+    public String viewSecretContent(@PathVariable Long id, Model model, HttpServletRequest request) {
+        Principal principal = request.getUserPrincipal();
         if (principal == null) {
             return "redirect:/login";
         }
         Optional<Consejo> consejoOpt = consejoService.findById(id);
         if (consejoOpt.isPresent()) {
-            model.addAttribute("consejo", consejoOpt.get());
-            return "advice-secret";
+            Consejo consejo = consejoOpt.get();
+            Usuario user = usuarioService.findByEmail(principal.getName()).orElseThrow();
+            
+            // FIX: Validar si ha pagado antes de mostrar la plantilla de contenido secreto
+            boolean isSeller = consejo.getSeller().getId().equals(user.getId());
+            boolean isAdmin = request.isUserInRole("ADMIN") || request.isUserInRole("ROLE_ADMIN");
+            boolean hasBought = user.getCompras().stream().anyMatch(t -> t.getConsejo().getId().equals(id));
+            
+            if (isSeller || isAdmin || hasBought) {
+                model.addAttribute("consejo", consejo);
+                return "advice-secret";
+            } else {
+                return "redirect:/advice-detail/" + id;
+            }
         }
         return "redirect:/profile-view";
     }

@@ -11,9 +11,10 @@ public interface ConsejoMapper {
     @Mapping(source = "seller.nombre", target = "sellerName")
     ConsejoDTO toDTO(Consejo consejo);
 
-    // Mapeo inverso necesario para recibir DTOs de entrada en el POST/PUT
+    // FIX: Añadimos attachmentName a la lista de ignorados en la conversión inversa
     @Mapping(target = "seller", ignore = true)
     @Mapping(target = "imageBytes", ignore = true)
+    @Mapping(target = "attachmentName", ignore = true)
     @Mapping(target = "attachmentPath", ignore = true)
     @Mapping(target = "transactions", ignore = true)
     @Mapping(target = "reviews", ignore = true)

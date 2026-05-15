@@ -9,6 +9,7 @@ import jakarta.persistence.ElementCollection;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column; // Añadido
 import java.util.ArrayList;
 
 @Entity
@@ -19,12 +20,13 @@ public class Usuario {
     private Long id;
 
     private String nombre;
+    
+    // FIX Race Condition: Exigir unicidad en la base de datos de manera estricta
+    @Column(unique = true, nullable = false)
     private String email;
+    
     private String contrasena;
-    // The profile picture will be handled later
 
-    // roles: a list of strings that represent the roles assigned to the user (e.g.,
-    // "USER", "ADMIN")
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> roles;
 
@@ -35,7 +37,6 @@ public class Usuario {
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Valoracion> valoraciones = new ArrayList<>();
 
-    // Empty constructor required by JPA
     public Usuario() {
     }
 
@@ -43,7 +44,6 @@ public class Usuario {
         this.nombre = nombre;
         this.email = email;
         this.contrasena = contrasena;
-        // by default, every new user will have the "USER" role
         this.roles = List.of("USER");
     }
 

@@ -35,8 +35,10 @@ public class UsuarioController {
         return "login";
     }
 
+    // FIX: Leemos parámetros individuales para evitar vulnerabilidad de Mass Assignment (que inyecten id o roles)
     @PostMapping("/registro")
-    public String registrarUsuario(Model model, Usuario usuario) {
+    public String registrarUsuario(Model model, @RequestParam String nombre, @RequestParam String email, @RequestParam String contrasena) {
+        Usuario usuario = new Usuario(nombre, email, contrasena);
         if (!usuarioService.registrarNuevoUsuario(usuario)) {
             model.addAttribute("errorMsg", "Ese correo electrónico ya está en uso. Por favor, utiliza otro o inicia sesión.");
             return "register"; 

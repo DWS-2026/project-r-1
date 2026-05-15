@@ -4,10 +4,12 @@ import java.net.URI;
 import java.security.Principal;
 import java.util.Optional;
 import java.util.NoSuchElementException;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.core.io.Resource;
@@ -19,7 +21,9 @@ import jakarta.validation.Valid;
 import es.codeurjc.web.dto.ConsejoDTO;
 import es.codeurjc.web.dto.ConsejoMapper;
 import es.codeurjc.web.model.Consejo;
+import es.codeurjc.web.model.Usuario;
 import es.codeurjc.web.service.ConsejoService;
+import es.codeurjc.web.service.UsuarioService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -33,6 +37,9 @@ public class ConsejoRestController {
 
     @Autowired
     private ConsejoService consejoService;
+
+    @Autowired
+    private UsuarioService usuarioService;
 
     @Autowired
     private ConsejoMapper consejoMapper;
@@ -67,10 +74,26 @@ public class ConsejoRestController {
 
     @Operation(summary = "Descargar el fichero adjunto extra de un consejo")
     @GetMapping("/{id}/attachment")
-    public ResponseEntity<Resource> downloadAttachmentRest(@PathVariable Long id) {
+    public ResponseEntity<Resource> downloadAttachmentRest(@PathVariable Long id, HttpServletRequest request) {
         Consejo consejo = consejoService.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("El consejo con ID " + id + " no existe."));
                 
+        Principal principal = request.getUserPrincipal();
+        if (principal == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        
+        Usuario user = usuarioService.findByEmail(principal.getName()).orElseThrow();
+        
+        // FIX: Evita vulnerabilidad IDOR bloqueando la descarga si no eres propietario o comprador
+        boolean isSeller = consejo.getSeller().getId().equals(user.getId());
+        boolean isAdmin = request.isUserInRole("ADMIN") || request.isUserInRole("ROLE_ADMIN");
+        boolean hasBought = user.getCompras().stream().anyMatch(t -> t.getConsejo().getId().equals(id));
+        
+        if (!isSeller && !isAdmin && !hasBought) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        
         Resource file = consejoService.getAttachmentResource(id);
         if (file != null) {
             return ResponseEntity.ok()

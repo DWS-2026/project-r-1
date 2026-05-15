@@ -52,10 +52,18 @@ public class ValoracionService {
         return valoracionRepository.findAll(pageable).map(valoracionMapper::toDTO);
     }
 
-    // Cambiado para devolver el objeto creado para poder usar su ID en el Header Location del REST
     public Valoracion createReview(Long consejoId, String userEmail, String title, int score, String comment) {
         Usuario user = usuarioService.findByEmail(userEmail).orElseThrow();
         Consejo consejo = consejoService.findById(consejoId).orElseThrow();
+
+        // FIX BOLA: Evita que alguien valore algo que no ha comprado.
+        boolean hasBought = user.getCompras().stream().anyMatch(t -> t.getConsejo().getId().equals(consejoId));
+        boolean isSeller = consejo.getSeller().getId().equals(user.getId());
+
+        if (!hasBought && !isSeller) {
+            throw new SecurityException("Acceso denegado: No puedes valorar un consejo que no has adquirido.");
+        }
+
         Valoracion v = new Valoracion(user, consejo, score, title, comment);
         return valoracionRepository.save(v);
     }
@@ -73,11 +81,18 @@ public class ValoracionService {
         return false;
     }
 
+    // FIX BAC (Broken Access Control): Se añade validación para que el ADMIN también pueda borrar reseñas.
     public boolean deleteReview(Long id, String userEmail) {
         Optional<Valoracion> vOpcional = valoracionRepository.findById(id);
-        if (vOpcional.isPresent() && vOpcional.get().getAuthor().getEmail().equals(userEmail)) {
-            valoracionRepository.deleteById(id);
-            return true;
+        if (vOpcional.isPresent()) {
+            Usuario user = usuarioService.findByEmail(userEmail).orElseThrow();
+            boolean isOwner = vOpcional.get().getAuthor().getEmail().equals(userEmail);
+            boolean isAdmin = user.getRoles().contains("ADMIN");
+            
+            if (isOwner || isAdmin) {
+                valoracionRepository.deleteById(id);
+                return true;
+            }
         }
         return false;
     }

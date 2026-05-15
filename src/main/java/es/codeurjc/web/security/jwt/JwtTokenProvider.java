@@ -2,16 +2,30 @@ package es.codeurjc.web.security.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
 import javax.crypto.SecretKey;
+import io.jsonwebtoken.security.Keys;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.List;
 
 @Component
 public class JwtTokenProvider {
 
-    // Genera una clave secreta segura automáticamente
-    private final SecretKey jwtSecret = Jwts.SIG.HS256.key().build();
+    // FIX JWT: La clave ya no se genera aleatoriamente en cada arranque.
+    // Ahora se lee de application.properties, por lo que los tokens son válidos tras reinicios.
+    @Value("${jwt.secret}")
+    private String jwtSecretString;
+
+    private SecretKey jwtSecret;
+
+    @PostConstruct
+    public void init() {
+        this.jwtSecret = Keys.hmacShaKeyFor(jwtSecretString.getBytes(StandardCharsets.UTF_8));
+    }
 
     public String generateToken(String username, List<String> roles) {
         return Jwts.builder()

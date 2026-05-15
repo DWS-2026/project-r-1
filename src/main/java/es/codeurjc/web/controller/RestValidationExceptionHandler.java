@@ -27,7 +27,6 @@ public class RestValidationExceptionHandler {
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
-    // NUEVO: Atrapa peticiones a IDs que no existen y genera un JSON con el 404
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<Map<String, Object>> handleNotFound(NoSuchElementException ex) {
         Map<String, Object> response = new HashMap<>();
@@ -38,7 +37,6 @@ public class RestValidationExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
-    // NUEVO: Atrapa errores lógicos (ej. comprar tu propio consejo) y genera un JSON con el 400
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Map<String, Object>> handleBadRequest(IllegalArgumentException ex) {
         Map<String, Object> response = new HashMap<>();
@@ -49,13 +47,14 @@ public class RestValidationExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
-    // NUEVO: Comodín para atrapar cualquier error interno (500) y evitar que escupa HTML
+    // FIX INFO LEAK: El handler genérico ya no devuelve el mensaje interno de la excepción,
+    // evitando que se filtren rutas, nombres de clases u otros detalles de implementación.
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleGenericException(Exception ex) {
         Map<String, Object> response = new HashMap<>();
         response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         response.put("error", HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
-        response.put("message", ex.getMessage());
+        response.put("message", "Ha ocurrido un error interno en el servidor. Contacta con el administrador.");
         
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }

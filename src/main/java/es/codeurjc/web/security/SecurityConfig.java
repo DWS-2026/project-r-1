@@ -24,7 +24,6 @@ public class SecurityConfig {
     @Autowired
     private RestUnauthorizedHandler restUnauthorizedHandler;
 
-    // Inyectamos el handler para los 403 JSON
     @Autowired
     private RestAccessDeniedHandler restAccessDeniedHandler;
 
@@ -47,16 +46,29 @@ public class SecurityConfig {
         
         http.securityMatcher("/api/v1/**"); 
         
-        // Registramos el manejador de 403 Forbidden para la API
         http.exceptionHandling(handling -> handling
                 .authenticationEntryPoint(restUnauthorizedHandler)
                 .accessDeniedHandler(restAccessDeniedHandler)
         );
         
         http.authorizeHttpRequests(authorize -> authorize
+                // Endpoints públicos de autenticación
                 .requestMatchers(HttpMethod.POST, "/api/v1/auth/login", "/api/v1/auth/signup").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/v1/consejos/**", "/api/v1/valoraciones/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/v1/usuarios/").hasRole("ADMIN") 
+
+                // Lectura pública del catálogo de consejos e imágenes
+                .requestMatchers(HttpMethod.GET, "/api/v1/consejos/**").permitAll()
+
+                // FIX IDOR: La lectura de cualquier valoración es pública (listado y detalle)
+                .requestMatchers(HttpMethod.GET, "/api/v1/valoraciones/").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/v1/valoraciones/{id}").permitAll()
+
+                // FIX IDOR: Solo el admin puede consultar datos de otros usuarios por ID o listarlos
+                .requestMatchers(HttpMethod.GET, "/api/v1/usuarios/**").hasRole("ADMIN")
+
+                // FIX FUGA DE DATOS: Solo el admin puede ver el listado global de transacciones
+                // El endpoint /me sigue accesible para usuarios autenticados gracias a anyRequest().authenticated()
+                .requestMatchers(HttpMethod.GET, "/api/v1/transacciones/").hasRole("ADMIN")
+
                 .anyRequest().authenticated()
         );
 

@@ -7,6 +7,9 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.ArrayList; // Añadido para limpiar colecciones
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Safelist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,7 +37,6 @@ public class ConsejoService {
 
     private static final String UPLOADS_FOLDER = "uploads";
 
-    // Reutilizamos el mapper automático
     public ConsejoDTO toDTO(Consejo consejo) {
         return consejoMapper.toDTO(consejo);
     }
@@ -59,7 +61,29 @@ public class ConsejoService {
         return consejoRepository.findBySeller(seller);
     }
 
+    private String sanitizeHtml(String html) {
+        if (html == null) return null;
+        return Jsoup.clean(html, Safelist.relaxed());
+    }
+
     public Consejo createAdvice(Consejo consejo, String sellerEmail, MultipartFile imageFile, MultipartFile attachmentFile) throws IOException {
+        consejo.setId(null); 
+        
+        // FIX Mass Assignment: Evitamos inyección de registros relacionales manipulados.
+        consejo.setTransactions(new ArrayList<>());
+        consejo.setReviews(new ArrayList<>());
+        
+        // FIX Path Traversal / Mass Assignment
+        consejo.setAttachmentName(null);
+        consejo.setAttachmentPath(null);
+
+        // FIX Validación de negocio
+        if (consejo.getPrice() < 0) {
+            throw new IllegalArgumentException("El precio no puede ser negativo.");
+        }
+
+        consejo.setSecretText(sanitizeHtml(consejo.getSecretText()));
+        
         Usuario seller = usuarioService.findByEmail(sellerEmail).orElseThrow();
         consejo.setSeller(seller);
         
@@ -73,8 +97,18 @@ public class ConsejoService {
     }
 
     public boolean deleteAdvice(Long id, String userEmail) {
-        Optional<Consejo> consejo = consejoRepository.findById(id);
-        if (consejo.isPresent() && consejo.get().getSeller().getEmail().equals(userEmail)) {
+        Optional<Consejo> consejoOpt = consejoRepository.findById(id);
+        if (consejoOpt.isEmpty()) {
+            return false;
+        }
+
+        Consejo consejo = consejoOpt.get();
+        Usuario user = usuarioService.findByEmail(userEmail).orElseThrow();
+
+        boolean isOwner = consejo.getSeller().getEmail().equals(userEmail);
+        boolean isAdmin = user.getRoles().contains("ADMIN");
+
+        if (isOwner || isAdmin) {
             consejoRepository.deleteById(id);
             return true;
         }
@@ -83,22 +117,38 @@ public class ConsejoService {
 
     public Optional<Consejo> updateAdvice(Long id, Consejo consejoDetalles, String userEmail, MultipartFile imageFile, MultipartFile attachmentFile) throws IOException {
         Optional<Consejo> consejoOpcional = consejoRepository.findById(id);
-        if (consejoOpcional.isPresent() && consejoOpcional.get().getSeller().getEmail().equals(userEmail)) {
-            Consejo consejoExistente = consejoOpcional.get();
-            consejoExistente.setTitle(consejoDetalles.getTitle());
-            consejoExistente.setCategory(consejoDetalles.getCategory());
-            consejoExistente.setPrice(consejoDetalles.getPrice());
-            consejoExistente.setSecretText(consejoDetalles.getSecretText()); 
-
-            if (imageFile != null && !imageFile.isEmpty()) {
-                consejoExistente.setImageBytes(imageFile.getBytes());
-            }
-            
-            handleAttachment(consejoExistente, attachmentFile);
-            
-            return Optional.of(consejoRepository.save(consejoExistente));
+        if (consejoOpcional.isEmpty()) {
+            return Optional.empty();
         }
-        return Optional.empty();
+
+        Consejo consejoExistente = consejoOpcional.get();
+        Usuario user = usuarioService.findByEmail(userEmail).orElseThrow();
+
+        boolean isOwner = consejoExistente.getSeller().getEmail().equals(userEmail);
+        boolean isAdmin = user.getRoles().contains("ADMIN");
+
+        if (!isOwner && !isAdmin) {
+            return Optional.empty();
+        }
+
+        // FIX Validación de negocio en la actualización
+        if (consejoDetalles.getPrice() < 0) {
+            throw new IllegalArgumentException("El precio no puede ser negativo.");
+        }
+
+        consejoExistente.setTitle(consejoDetalles.getTitle());
+        consejoExistente.setCategory(consejoDetalles.getCategory());
+        consejoExistente.setPrice(consejoDetalles.getPrice());
+
+        consejoExistente.setSecretText(sanitizeHtml(consejoDetalles.getSecretText()));
+
+        if (imageFile != null && !imageFile.isEmpty()) {
+            consejoExistente.setImageBytes(imageFile.getBytes());
+        }
+        
+        handleAttachment(consejoExistente, attachmentFile);
+        
+        return Optional.of(consejoRepository.save(consejoExistente));
     }
 
     private void handleAttachment(Consejo consejo, MultipartFile file) throws IOException {
@@ -108,7 +158,7 @@ public class ConsejoService {
             
             String originalName = file.getOriginalFilename();
             if (originalName == null || originalName.contains("..")) {
-                throw new SecurityException("Intento de Path Traversal detectado");
+                throw new SecurityException("Intento de Path Traversal detectado en la subida");
             }
             
             String sanitizedName = originalName.replaceAll("[^a-zA-Z0-9\\.\\-]", "_");
@@ -126,14 +176,19 @@ public class ConsejoService {
         try {
             Consejo consejo = consejoRepository.findById(id).orElseThrow();
             if (consejo.getAttachmentPath() != null) {
-                Path path = Paths.get(consejo.getAttachmentPath()).toAbsolutePath();
-                Resource resource = new UrlResource(path.toUri());
+                Path basePath = Paths.get(UPLOADS_FOLDER).toAbsolutePath().normalize();
+                Path filePath = Paths.get(consejo.getAttachmentPath()).toAbsolutePath().normalize();
+                
+                if (!filePath.startsWith(basePath)) {
+                    throw new SecurityException("Intento de lectura de archivos fuera del directorio permitido");
+                }
+
+                Resource resource = new UrlResource(filePath.toUri());
                 if (resource.exists() || resource.isReadable()) {
                     return resource;
                 }
             }
         } catch (Exception e) {
-            // Ignorado por simplicidad
         }
         return null;
     }
