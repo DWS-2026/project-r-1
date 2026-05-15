@@ -33,7 +33,8 @@ public class RestUnauthorizedHandler implements AuthenticationEntryPoint {
         final Map<String, Object> body = new HashMap<>();
         body.put("status", HttpServletResponse.SC_UNAUTHORIZED);
         body.put("error", "Unauthorized");
-        body.put("message", authException.getMessage());
+        // FIX INFO LEAK: Nunca devolvemos el mensaje interno de la excepción al cliente
+        body.put("message", "Credenciales inválidas o token ausente.");
         body.put("path", request.getServletPath());
 
         final ObjectMapper mapper = new ObjectMapper();

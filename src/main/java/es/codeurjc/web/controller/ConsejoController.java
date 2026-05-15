@@ -31,12 +31,19 @@ public class ConsejoController {
     @Autowired
     private UsuarioService usuarioService;
 
+    // FIX Mass Assignment: Ya no aceptamos la entidad completa por data binding.
+    // Recibimos cada campo por separado y construimos manualmente el objeto.
     @PostMapping("/advice-create")
-    public String createAdvice(Consejo consejo, HttpServletRequest request, 
+    public String createAdvice(@RequestParam String title,
+                               @RequestParam String category,
+                               @RequestParam double price,
+                               @RequestParam String secretText,
+                               HttpServletRequest request, 
                                @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
                                @RequestParam(value = "attachmentFile", required = false) MultipartFile attachmentFile) throws IOException {
         Principal principal = request.getUserPrincipal();
         if (principal != null) {
+            Consejo consejo = new Consejo(title, category, price, secretText, null);
             consejoService.createAdvice(consejo, principal.getName(), imageFile, attachmentFile);
         }
         return "redirect:/profile-view"; 
@@ -121,13 +128,23 @@ public class ConsejoController {
         return "redirect:/profile-view";
     }
 
+    // FIX Mass Assignment: Mismo tratamiento que en advice-create. Parámetros individuales.
     @PostMapping("/advice-edit/{id}")
-    public String processEditForm(@PathVariable Long id, Consejo consejoDetalles, 
+    public String processEditForm(@PathVariable Long id, 
+                                  @RequestParam String title,
+                                  @RequestParam String category,
+                                  @RequestParam double price,
+                                  @RequestParam String secretText,
                                   @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
                                   @RequestParam(value = "attachmentFile", required = false) MultipartFile attachmentFile, 
                                   HttpServletRequest request) throws IOException {
         Principal principal = request.getUserPrincipal();
         if (principal != null) {
+            Consejo consejoDetalles = new Consejo();
+            consejoDetalles.setTitle(title);
+            consejoDetalles.setCategory(category);
+            consejoDetalles.setPrice(price);
+            consejoDetalles.setSecretText(secretText);
             consejoService.updateAdvice(id, consejoDetalles, principal.getName(), imageFile, attachmentFile);
         }
         return "redirect:/profile-view";

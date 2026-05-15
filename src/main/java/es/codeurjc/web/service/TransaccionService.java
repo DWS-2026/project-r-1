@@ -52,6 +52,11 @@ public class TransaccionService {
             return null; // El usuario no puede comprar su propio consejo
         }
 
+        // FIX DoS/Logica: Impedir compras duplicadas que saturan la base de datos
+        if (transaccionRepository.existsByBuyerAndConsejo(buyer, consejo)) {
+            throw new IllegalArgumentException("Ya has adquirido este consejo. No es necesario comprarlo de nuevo.");
+        }
+
         Transaccion transaccion = new Transaccion(buyer, consejo, consejo.getPrice());
         return transaccionRepository.save(transaccion);
     }

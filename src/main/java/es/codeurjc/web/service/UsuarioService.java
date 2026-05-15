@@ -3,6 +3,7 @@ package es.codeurjc.web.service;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,8 +34,14 @@ public class UsuarioService {
             return false;
         }
         usuario.setContrasena(passwordEncoder.encode(usuario.getContrasena()));
-        usuarioRepository.save(usuario);
-        return true;
+        try {
+            usuarioRepository.save(usuario);
+            return true;
+        } catch (DataIntegrityViolationException e) {
+            // FIX Race Condition: Si por concurrencia ambos hilos pasan el if, la BD lanzará error de unicidad.
+            // Lo capturamos para no devolver un 500 inesperado.
+            return false;
+        }
     }
 
     public Optional<Usuario> findByEmail(String email) {

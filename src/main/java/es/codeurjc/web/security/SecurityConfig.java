@@ -7,6 +7,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -19,6 +20,7 @@ import es.codeurjc.web.security.jwt.JwtRequestFilter;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
     @Autowired
@@ -55,6 +57,9 @@ public class SecurityConfig {
                 // Endpoints públicos de autenticación
                 .requestMatchers(HttpMethod.POST, "/api/v1/auth/login", "/api/v1/auth/signup").permitAll()
 
+                // FIX: El attachment NO es público. Lo forzamos a autenticado antes del wildcard permitAll.
+                .requestMatchers(HttpMethod.GET, "/api/v1/consejos/*/attachment").authenticated()
+
                 // Lectura pública del catálogo de consejos e imágenes
                 .requestMatchers(HttpMethod.GET, "/api/v1/consejos/**").permitAll()
 
@@ -86,8 +91,10 @@ public class SecurityConfig {
     @Order(2)
     public SecurityFilterChain webFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/", "/registro", "/error", "/register", "/css/**", "/js/**", "/image/**", "/advice/*/image", "/advice-detail/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                .requestMatchers("/", "/registro", "/error", "/register", "/css/**", "/js/**", "/image/**", "/advice/*/image", "/advice-detail/**").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN") 
+                // FIX Info Disclosure: Swagger/OpenAPI solo para administradores
+                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").hasRole("ADMIN")
                 .anyRequest().authenticated()
         );
 
