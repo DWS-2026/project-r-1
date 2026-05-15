@@ -1,7 +1,7 @@
 package es.codeurjc.web.controller;
 
-import es.codeurjc.web.model.Consejo;
-import es.codeurjc.web.service.ConsejoService;
+import es.codeurjc.web.model.Advice;
+import es.codeurjc.web.service.AdviceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,12 +12,12 @@ import java.util.List;
 public class WebController {
 
     @Autowired
-    private ConsejoService consejoService;
+    private AdviceService adviceService;
 
     @GetMapping("/")
     public String index(Model model) {
-        List<Consejo> consejos = consejoService.findAll();
-        model.addAttribute("consejos", consejos);
+        List<Advice> advices = adviceService.findAll();
+        model.addAttribute("advices", advices);
         return "index";
     }
 }

@@ -3,30 +3,30 @@
     <div class="container mt-4" style="max-width: 900px;">
         
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h3 class="m-0">Historial de Compras</h3>
-            <a href="/profile-view" class="btn btn-secondary">Volver al Perfil</a>
+            <h3 class="m-0">Purchase History</h3>
+            <a href="/profile-view" class="btn btn-secondary">Return to Profile</a>
         </div>
         
         <div class="table-responsive shadow-sm border rounded mb-5">
             <table class="table table-hover mb-0">
                 <thead class="table-light">
                     <tr>
-                        <th>Fecha de Compra</th>
-                        <th>Concepto (Consejo)</th>
-                        <th>Importe</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
+                        <th>Date of Purchase</th>
+                        <th>Concept (Advice)</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {{#transactions}}
                     <tr>
                         <td>{{purchaseDate}}</td>
-                        <td><strong>{{consejo.title}}</strong></td>
+                        <td><strong>{{advice.title}}</strong></td>
                         <td class="text-danger fw-bold">-{{priceAtPurchase}} €</td>
-                        <td><span class="badge bg-success">Completado</span></td>
+                        <td><span class="badge bg-success">Completed</span></td>
                         <td>
-                            <a href="/advice-detail/{{consejo.id}}" class="btn btn-outline-primary btn-sm">Ver Consejo</a>
+                            <a href="/advice-detail/{{advice.id}}" class="btn btn-outline-primary btn-sm">View Advice</a>
                         </td>
                     </tr>
                     {{/transactions}}
@@ -34,7 +34,7 @@
                     {{^transactions}}
                     <tr>
                         <td colspan="5" class="text-center text-muted py-4">
-                            Aún no has realizado ninguna compra en la plataforma.
+                            You have not made any purchases on the platform yet.
                         </td>
                     </tr>
                     {{/transactions}}

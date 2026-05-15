@@ -6,7 +6,7 @@
     },
     "item": [
         {
-            "name": "Autenticación",
+            "name": "Authentication",
             "item": [
                 {
                     "name": "POST Login JWT",
@@ -49,7 +49,7 @@
                     }
                 },
                 {
-                    "name": "POST Registro / Signup",
+                    "name": "POST Signup",
                     "request": {
                         "method": "POST",
                         "header": [
@@ -60,7 +60,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"nombre\": \"Nuevo User\",\n    \"email\": \"nuevo@urjc.es\",\n    \"password\": \"1234\"\n}"
+                            "raw": "{\n    \"name\": \"New User\",\n    \"email\": \"nuevo@urjc.es\",\n    \"password\": \"1234\"\n}"
                         },
                         "url": {
                             "raw": "{{baseUrl}}/api/v1/auth/signup",
@@ -79,60 +79,60 @@
             ]
         },
         {
-            "name": "Consejos",
+            "name": "Advices",
             "item": [
                 {
-                    "name": "GET Todos los Consejos (Public)",
+                    "name": "GET All Advices (Public)",
                     "request": {
                         "method": "GET",
                         "header": [],
                         "url": {
-                            "raw": "{{baseUrl}}/api/v1/consejos/",
+                            "raw": "{{baseUrl}}/api/v1/advices/",
                             "host": [
                                 "{{baseUrl}}"
                             ],
                             "path": [
                                 "api",
                                 "v1",
-                                "consejos",
+                                "advices",
                                 ""
                             ]
                         }
                     }
                 },
                 {
-                    "name": "GET Consejo por ID (Public)",
+                    "name": "GET Advice by ID (Public)",
                     "request": {
                         "method": "GET",
                         "header": [],
                         "url": {
-                            "raw": "{{baseUrl}}/api/v1/consejos/1",
+                            "raw": "{{baseUrl}}/api/v1/advices/1",
                             "host": [
                                 "{{baseUrl}}"
                             ],
                             "path": [
                                 "api",
                                 "v1",
-                                "consejos",
+                                "advices",
                                 "1"
                             ]
                         }
                     }
                 },
                 {
-                    "name": "GET Imagen de Consejo (Public)",
+                    "name": "GET Advice Image (Public)",
                     "request": {
                         "method": "GET",
                         "header": [],
                         "url": {
-                            "raw": "{{baseUrl}}/api/v1/consejos/1/image",
+                            "raw": "{{baseUrl}}/api/v1/advices/1/image",
                             "host": [
                                 "{{baseUrl}}"
                             ],
                             "path": [
                                 "api",
                                 "v1",
-                                "consejos",
+                                "advices",
                                 "1",
                                 "image"
                             ]
@@ -140,7 +140,7 @@
                     }
                 },
                 {
-                    "name": "POST Crear Consejo (Auth JWT con Multipart)",
+                    "name": "POST Create Advice (Auth JWT with Multipart)",
                     "request": {
                         "auth": {
                             "type": "bearer",
@@ -158,8 +158,8 @@
                             "mode": "formdata",
                             "formdata": [
                                 {
-                                    "key": "consejo",
-                                    "value": "{\n    \"title\": \"Cómo ganar el proyecto de DWS\",\n    \"category\": \"Estudios\",\n    \"price\": 10.00,\n    \"secretText\": \"Sigue la rúbrica punto por punto.\"\n}",
+                                    "key": "advice",
+                                    "value": "{\n    \"title\": \"How to win the web dev project\",\n    \"category\": \"Studies\",\n    \"price\": 10.00,\n    \"secretText\": \"Follow the rubric point by point.\"\n}",
                                     "contentType": "application/json",
                                     "type": "text"
                                 },
@@ -176,21 +176,21 @@
                             ]
                         },
                         "url": {
-                            "raw": "{{baseUrl}}/api/v1/consejos/",
+                            "raw": "{{baseUrl}}/api/v1/advices/",
                             "host": [
                                 "{{baseUrl}}"
                             ],
                             "path": [
                                 "api",
                                 "v1",
-                                "consejos",
+                                "advices",
                                 ""
                             ]
                         }
                     }
                 },
                 {
-                    "name": "PUT Editar Consejo (Auth JWT con Multipart)",
+                    "name": "PUT Edit Advice (Auth JWT with Multipart)",
                     "request": {
                         "auth": {
                             "type": "bearer",
@@ -208,29 +208,29 @@
                             "mode": "formdata",
                             "formdata": [
                                 {
-                                    "key": "consejo",
-                                    "value": "{\n    \"title\": \"Consejo Editado\",\n    \"category\": \"Estudios\",\n    \"price\": 15.00,\n    \"secretText\": \"Texto modificado.\"\n}",
+                                    "key": "advice",
+                                    "value": "{\n    \"title\": \"Edited Advice\",\n    \"category\": \"Studies\",\n    \"price\": 15.00,\n    \"secretText\": \"Modified text.\"\n}",
                                     "contentType": "application/json",
                                     "type": "text"
                                 }
                             ]
                         },
                         "url": {
-                            "raw": "{{baseUrl}}/api/v1/consejos/1",
+                            "raw": "{{baseUrl}}/api/v1/advices/1",
                             "host": [
                                 "{{baseUrl}}"
                             ],
                             "path": [
                                 "api",
                                 "v1",
-                                "consejos",
+                                "advices",
                                 "1"
                             ]
                         }
                     }
                 },
                 {
-                    "name": "DELETE Borrar Consejo (Auth JWT)",
+                    "name": "DELETE Delete Advice (Auth JWT)",
                     "request": {
                         "auth": {
                             "type": "bearer",
@@ -245,14 +245,14 @@
                         "method": "DELETE",
                         "header": [],
                         "url": {
-                            "raw": "{{baseUrl}}/api/v1/consejos/1",
+                            "raw": "{{baseUrl}}/api/v1/advices/1",
                             "host": [
                                 "{{baseUrl}}"
                             ],
                             "path": [
                                 "api",
                                 "v1",
-                                "consejos",
+                                "advices",
                                 "1"
                             ]
                         }
@@ -261,10 +261,10 @@
             ]
         },
         {
-            "name": "Usuarios",
+            "name": "Users",
             "item": [
                 {
-                    "name": "GET Todos los Usuarios (Admin JWT Solo)",
+                    "name": "GET All Users (Admin JWT Only)",
                     "request": {
                         "auth": {
                             "type": "bearer",
@@ -279,21 +279,21 @@
                         "method": "GET",
                         "header": [],
                         "url": {
-                            "raw": "{{baseUrl}}/api/v1/usuarios/",
+                            "raw": "{{baseUrl}}/api/v1/users/",
                             "host": [
                                 "{{baseUrl}}"
                             ],
                             "path": [
                                 "api",
                                 "v1",
-                                "usuarios",
+                                "users",
                                 ""
                             ]
                         }
                     }
                 },
                 {
-                    "name": "GET Usuario por ID (Auth JWT)",
+                    "name": "GET User by ID (Auth JWT)",
                     "request": {
                         "auth": {
                             "type": "bearer",
@@ -308,21 +308,21 @@
                         "method": "GET",
                         "header": [],
                         "url": {
-                            "raw": "{{baseUrl}}/api/v1/usuarios/2",
+                            "raw": "{{baseUrl}}/api/v1/users/2",
                             "host": [
                                 "{{baseUrl}}"
                             ],
                             "path": [
                                 "api",
                                 "v1",
-                                "usuarios",
+                                "users",
                                 "2"
                             ]
                         }
                     }
                 },
                 {
-                    "name": "PUT Actualizar Usuario (Auth JWT)",
+                    "name": "PUT Update User (Auth JWT)",
                     "request": {
                         "auth": {
                             "type": "bearer",
@@ -343,24 +343,24 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"nombre\": \"Fermin Editado\",\n    \"password\": \"nuevaPass\",\n    \"confirmPassword\": \"nuevaPass\"\n}"
+                            "raw": "{\n    \"name\": \"Edited Fermin\",\n    \"password\": \"newPass\",\n    \"confirmPassword\": \"newPass\"\n}"
                         },
                         "url": {
-                            "raw": "{{baseUrl}}/api/v1/usuarios/2",
+                            "raw": "{{baseUrl}}/api/v1/users/2",
                             "host": [
                                 "{{baseUrl}}"
                             ],
                             "path": [
                                 "api",
                                 "v1",
-                                "usuarios",
+                                "users",
                                 "2"
                             ]
                         }
                     }
                 },
                 {
-                    "name": "DELETE Borrar Usuario (Auth JWT)",
+                    "name": "DELETE Delete User (Auth JWT)",
                     "request": {
                         "auth": {
                             "type": "bearer",
@@ -375,14 +375,14 @@
                         "method": "DELETE",
                         "header": [],
                         "url": {
-                            "raw": "{{baseUrl}}/api/v1/usuarios/2",
+                            "raw": "{{baseUrl}}/api/v1/users/2",
                             "host": [
                                 "{{baseUrl}}"
                             ],
                             "path": [
                                 "api",
                                 "v1",
-                                "usuarios",
+                                "users",
                                 "2"
                             ]
                         }
@@ -391,10 +391,10 @@
             ]
         },
         {
-            "name": "Transacciones",
+            "name": "Transactions",
             "item": [
                 {
-                    "name": "POST Comprar Consejo (Auth JWT)",
+                    "name": "POST Buy Advice (Auth JWT)",
                     "request": {
                         "auth": {
                             "type": "bearer",
@@ -409,19 +409,19 @@
                         "method": "POST",
                         "header": [],
                         "url": {
-                            "raw": "{{baseUrl}}/api/v1/transacciones/?consejoId=1",
+                            "raw": "{{baseUrl}}/api/v1/transactions/?adviceId=1",
                             "host": [
                                 "{{baseUrl}}"
                             ],
                             "path": [
                                 "api",
                                 "v1",
-                                "transacciones",
+                                "transactions",
                                 ""
                             ],
                             "query": [
                                 {
-                                    "key": "consejoId",
+                                    "key": "adviceId",
                                     "value": "1"
                                 }
                             ]
@@ -429,7 +429,7 @@
                     }
                 },
                 {
-                    "name": "GET Mis Transacciones (Auth JWT)",
+                    "name": "GET My Transactions (Auth JWT)",
                     "request": {
                         "auth": {
                             "type": "bearer",
@@ -444,14 +444,14 @@
                         "method": "GET",
                         "header": [],
                         "url": {
-                            "raw": "{{baseUrl}}/api/v1/transacciones/me",
+                            "raw": "{{baseUrl}}/api/v1/transactions/me",
                             "host": [
                                 "{{baseUrl}}"
                             ],
                             "path": [
                                 "api",
                                 "v1",
-                                "transacciones",
+                                "transactions",
                                 "me"
                             ]
                         }
@@ -460,10 +460,10 @@
             ]
         },
         {
-            "name": "Valoraciones",
+            "name": "Reviews",
             "item": [
                 {
-                    "name": "POST Crear Valoracion (Auth JWT)",
+                    "name": "POST Create Review (Auth JWT)",
                     "request": {
                         "auth": {
                             "type": "bearer",
@@ -484,22 +484,22 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"title\": \"Muy buen consejo\",\n    \"score\": 9,\n    \"comment\": \"Me ha servido de mucha ayuda.\"\n}"
+                            "raw": "{\n    \"title\": \"Very good advice\",\n    \"score\": 9,\n    \"comment\": \"It was very helpful.\"\n}"
                         },
                         "url": {
-                            "raw": "{{baseUrl}}/api/v1/valoraciones/?consejoId=1",
+                            "raw": "{{baseUrl}}/api/v1/reviews/?adviceId=1",
                             "host": [
                                 "{{baseUrl}}"
                             ],
                             "path": [
                                 "api",
                                 "v1",
-                                "valoraciones",
+                                "reviews",
                                 ""
                             ],
                             "query": [
                                 {
-                                    "key": "consejoId",
+                                    "key": "adviceId",
                                     "value": "1"
                                 }
                             ]
@@ -507,7 +507,7 @@
                     }
                 },
                 {
-                    "name": "GET Mis Valoraciones (Auth JWT)",
+                    "name": "GET My Reviews (Auth JWT)",
                     "request": {
                         "auth": {
                             "type": "bearer",
@@ -522,21 +522,21 @@
                         "method": "GET",
                         "header": [],
                         "url": {
-                            "raw": "{{baseUrl}}/api/v1/valoraciones/me",
+                            "raw": "{{baseUrl}}/api/v1/reviews/me",
                             "host": [
                                 "{{baseUrl}}"
                             ],
                             "path": [
                                 "api",
                                 "v1",
-                                "valoraciones",
+                                "reviews",
                                 "me"
                             ]
                         }
                     }
                 },
                 {
-                    "name": "PUT Editar Valoracion (Auth JWT)",
+                    "name": "PUT Edit Review (Auth JWT)",
                     "request": {
                         "auth": {
                             "type": "bearer",
@@ -557,24 +557,24 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \"title\": \"Consejo editado\",\n    \"score\": 5,\n    \"comment\": \"He cambiado de opinión tras usarlo más tiempo.\"\n}"
+                            "raw": "{\n    \"title\": \"Edited advice\",\n    \"score\": 5,\n    \"comment\": \"I changed my mind after using it more.\"\n}"
                         },
                         "url": {
-                            "raw": "{{baseUrl}}/api/v1/valoraciones/1",
+                            "raw": "{{baseUrl}}/api/v1/reviews/1",
                             "host": [
                                 "{{baseUrl}}"
                             ],
                             "path": [
                                 "api",
                                 "v1",
-                                "valoraciones",
+                                "reviews",
                                 "1"
                             ]
                         }
                     }
                 },
                 {
-                    "name": "DELETE Borrar Valoracion (Auth JWT)",
+                    "name": "DELETE Delete Review (Auth JWT)",
                     "request": {
                         "auth": {
                             "type": "bearer",
@@ -589,14 +589,14 @@
                         "method": "DELETE",
                         "header": [],
                         "url": {
-                            "raw": "{{baseUrl}}/api/v1/valoraciones/1",
+                            "raw": "{{baseUrl}}/api/v1/reviews/1",
                             "host": [
                                 "{{baseUrl}}"
                             ],
                             "path": [
                                 "api",
                                 "v1",
-                                "valoraciones",
+                                "reviews",
                                 "1"
                             ]
                         }

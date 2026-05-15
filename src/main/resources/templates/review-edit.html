@@ -1,35 +1,35 @@
 {{>header}}
     <div class="container mt-4" style="max-width: 600px;">
         <div class="border p-4 mb-5 shadow-sm bg-light">
-            <h3>Editar tu opinión</h3>
+            <h3>Edit your opinion</h3>
             {{#review}}
-            <p class="text-muted">Editando valoración de: "<strong>{{consejo.title}}</strong>"</p>
+            <p class="text-muted">Editing review for: "<strong>{{advice.title}}</strong>"</p>
             <hr>
             
             <form action="/review-edit/{{id}}" method="POST">
                 <input type="hidden" name="_csrf" value="{{_csrf.token}}"/>
                 
                 <div class="mb-3">
-                    <label class="form-label fw-bold">Título breve:</label>
+                    <label class="form-label fw-bold">Short title:</label>
                     <input type="text" name="title" class="form-control" value="{{title}}" required>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label fw-bold">Nota (0 al 10):</label>
+                    <label class="form-label fw-bold">Score (0 to 10):</label>
                     <input type="number" name="score" class="form-control" min="0" max="10" value="{{score}}" required>
                 </div>
 
                 <div class="mb-4">
-                    <label class="form-label fw-bold">Tu experiencia:</label>
+                    <label class="form-label fw-bold">Your experience:</label>
                     <textarea name="comment" class="form-control" rows="4" required>{{comment}}</textarea>
                 </div>
 
-                <button type="submit" class="btn btn-success w-100 mb-2">Guardar Cambios</button>
+                <button type="submit" class="btn btn-success w-100 mb-2">Save Changes</button>
             </form>
             
-            <form action="/review-delete/{{id}}" method="POST" onsubmit="return confirm('¿Estás seguro de que quieres borrar tu valoración?');">
+            <form action="/review-delete/{{id}}" method="POST" onsubmit="return confirm('Are you sure you want to delete your review?');">
                 <input type="hidden" name="_csrf" value="{{_csrf.token}}"/>
-                <button type="submit" class="btn btn-outline-danger w-100">Eliminar Valoración</button>
+                <button type="submit" class="btn btn-outline-danger w-100">Delete Review</button>
             </form>
             {{/review}}
         </div>

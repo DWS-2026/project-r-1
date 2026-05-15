@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
 
 @SpringBootApplication
-// Esta anotación es clave para que los listados paginados de la API REST se formuteen bien en JSON
+// This annotation is key for paginated REST API lists to be formatted properly in JSON
 @EnableSpringDataWebSupport(pageSerializationMode = EnableSpringDataWebSupport.PageSerializationMode.VIA_DTO)
 public class Application {
 

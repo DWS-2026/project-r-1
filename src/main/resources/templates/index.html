@@ -1,23 +1,23 @@
 {{>header}}
     <div class="container">
-        <h3>Listado de Consejos</h3>
+        <h3>Advices List</h3>
         <hr>
         <div class="row">
             
-            {{#consejos}}
+            {{#advices}}
             <div class="col-md-4 mb-3">
                 <div class="border p-2 text-center"> 
                     
-                    <img src="/advice/{{id}}/image" alt="Foto Consejo" class="img-fluid mb-2" style="height: 200px; object-fit: cover;">
+                    <img src="/advice/{{id}}/image" alt="Advice Photo" class="img-fluid mb-2" style="height: 200px; object-fit: cover;">
                     
                     <h4>{{title}}</h4>
-                    <p>Categoría: {{category}}</p>
-                    <p><strong>Precio: {{price}} €</strong></p>
+                    <p>Category: {{category}}</p>
+                    <p><strong>Price: {{price}} €</strong></p>
                     
-                    <a href="/advice-detail/{{id}}" class="btn btn-success w-100">Ver Detalles</a>
+                    <a href="/advice-detail/{{id}}" class="btn btn-success w-100">View Details</a>
                 </div>
             </div>
-            {{/consejos}}
+            {{/advices}}
             
         </div>
         

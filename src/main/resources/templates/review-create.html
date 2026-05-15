@@ -1,35 +1,35 @@
 {{>header}}
     <div class="container mt-4" style="max-width: 600px;">
         <div class="border p-4 mb-5 shadow-sm bg-light">
-            <h3>Deja tu opinión</h3>
-            {{#consejo}}
-            <p class="text-muted">Estás valorando: "<strong>{{title}}</strong>"</p>
+            <h3>Leave your opinion</h3>
+            {{#advice}}
+            <p class="text-muted">You are reviewing: "<strong>{{title}}</strong>"</p>
             <hr>
             
             <form action="/review-create/{{id}}" method="POST">
                 <input type="hidden" name="_csrf" value="{{_csrf.token}}"/>
                 
                 <div class="mb-3">
-                    <label class="form-label fw-bold">Título breve:</label>
-                    <input type="text" name="title" class="form-control" placeholder="Ej: Me funcionó..." required>
+                    <label class="form-label fw-bold">Short title:</label>
+                    <input type="text" name="title" class="form-control" placeholder="Ex: It worked for me..." required>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label fw-bold">Nota (0 al 10):</label>
+                    <label class="form-label fw-bold">Score (0 to 10):</label>
                     <input type="number" name="score" class="form-control" min="0" max="10" placeholder="10" required>
                 </div>
 
                 <div class="mb-4">
-                    <label class="form-label fw-bold">Tu experiencia:</label>
-                    <textarea name="comment" class="form-control" rows="4" placeholder="Cuenta qué te pareció el consejo..." required></textarea>
+                    <label class="form-label fw-bold">Your experience:</label>
+                    <textarea name="comment" class="form-control" rows="4" placeholder="Tell us what you thought of the advice..." required></textarea>
                 </div>
 
                 <div class="d-flex justify-content-between">
-                    <a href="/profile-view" class="btn btn-secondary">Cancelar</a>
-                    <button type="submit" class="btn btn-primary px-4">Publicar Valoración</button>
+                    <a href="/profile-view" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary px-4">Publish Review</button>
                 </div>
             </form>
-            {{/consejo}}
+            {{/advice}}
         </div>
     </div>
 {{>footer}}

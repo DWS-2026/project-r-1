@@ -3,12 +3,12 @@
     <div class="container" style="max-width: 500px;">
         
         <div class="border p-4 mb-5 shadow-sm">
-            <h3 class="text-success mb-3">Pasarela de Pago</h3>
+            <h3 class="text-success mb-3">Payment Gateway</h3>
             
-            {{#consejo}}
+            {{#advice}}
             <div class="bg-light p-3 mb-3 border rounded">
-                <p class="m-0"><strong>Artículo:</strong> {{title}}</p>
-                <p class="m-0"><strong>Total a pagar:</strong> <span class="fs-4">{{price}} €</span></p>
+                <p class="m-0"><strong>Item:</strong> {{title}}</p>
+                <p class="m-0"><strong>Total to pay:</strong> <span class="fs-4">{{price}} €</span></p>
             </div>
 
             <hr>
@@ -18,19 +18,19 @@
                 <input type="hidden" name="_csrf" value="{{_csrf.token}}"/>
 
                 <div class="mb-3">
-                    <label class="form-label">Titular de la Tarjeta:</label>
-                    <input type="text" class="form-control" placeholder="Nombre Apellidos" required>
+                    <label class="form-label">Cardholder Name:</label>
+                    <input type="text" class="form-control" placeholder="First Last" required>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">Número de Tarjeta:</label>
+                    <label class="form-label">Card Number:</label>
                     <input type="text" class="form-control" placeholder="0000 0000 0000 0000" required>
                 </div>
 
                 <div class="row">
                     <div class="col-6 mb-3">
-                        <label class="form-label">Caducidad:</label>
-                        <input type="text" class="form-control" placeholder="MM/AA" required>
+                        <label class="form-label">Expiration:</label>
+                        <input type="text" class="form-control" placeholder="MM/YY" required>
                     </div>
                     <div class="col-6 mb-3">
                         <label class="form-label">CVV:</label>
@@ -38,12 +38,12 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-success w-100 btn-lg">Pagar y Desbloquear</button>
+                <button type="submit" class="btn btn-success w-100 btn-lg">Pay and Unlock</button>
             </form>
-            {{/consejo}}
+            {{/advice}}
             
             <div class="mt-3 text-center text-muted small">
-                <p>🔒 Pago seguro (confia)</p>
+                <p>🔒 Secure payment (trust me)</p>
             </div>
         </div>
 

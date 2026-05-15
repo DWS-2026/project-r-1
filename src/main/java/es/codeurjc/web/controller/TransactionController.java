@@ -8,30 +8,30 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import es.codeurjc.web.model.Consejo;
-import es.codeurjc.web.model.Usuario;
-import es.codeurjc.web.model.Transaccion;
-import es.codeurjc.web.service.ConsejoService;
-import es.codeurjc.web.service.TransaccionService;
-import es.codeurjc.web.service.UsuarioService;
+import es.codeurjc.web.model.Advice;
+import es.codeurjc.web.model.User;
+import es.codeurjc.web.model.Transaction;
+import es.codeurjc.web.service.AdviceService;
+import es.codeurjc.web.service.TransactionService;
+import es.codeurjc.web.service.UserService;
 
 @Controller
-public class TransaccionController {
+public class TransactionController {
 
     @Autowired
-    private TransaccionService transaccionService;
+    private TransactionService transactionService;
 
     @Autowired
-    private ConsejoService consejoService;
+    private AdviceService adviceService;
 
     @Autowired
-    private UsuarioService usuarioService;
+    private UserService userService;
 
     @GetMapping("/transaction-create/{id}")
     public String showPaymentGateway(@PathVariable Long id, Model model) {
-        Optional<Consejo> optionalConsejo = consejoService.findById(id);
-        if (optionalConsejo.isPresent()) {
-            model.addAttribute("consejo", optionalConsejo.get());
+        Optional<Advice> optionalAdvice = adviceService.findById(id);
+        if (optionalAdvice.isPresent()) {
+            model.addAttribute("advice", optionalAdvice.get());
             return "transaction-create";
         }
         return "error";
@@ -41,8 +41,8 @@ public class TransaccionController {
     public String processPayment(@PathVariable Long id, Principal principal) {
         if (principal == null) return "redirect:/login";
 
-        // Ajustado para el nuevo valor de retorno del servicio
-        Transaccion success = transaccionService.processPayment(id, principal.getName());
+        // Adjusted for the new service return value
+        Transaction success = transactionService.processPayment(id, principal.getName());
         if (success == null) {
             return "redirect:/profile-view"; 
         }
@@ -53,8 +53,8 @@ public class TransaccionController {
     public String showTransactions(Model model, Principal principal) {
         if (principal == null) return "redirect:/login";
 
-        Usuario buyer = usuarioService.findByEmail(principal.getName()).orElseThrow();
-        model.addAttribute("transactions", transaccionService.findByBuyer(buyer));
+        User buyer = userService.findByEmail(principal.getName()).orElseThrow();
+        model.addAttribute("transactions", transactionService.findByBuyer(buyer));
         return "transaction-view";
     }
 }

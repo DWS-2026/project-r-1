@@ -15,8 +15,8 @@ import java.util.List;
 @Component
 public class JwtTokenProvider {
 
-    // FIX JWT: La clave ya no se genera aleatoriamente en cada arranque.
-    // Ahora se lee de application.properties, por lo que los tokens son válidos tras reinicios.
+    // FIX JWT: The key is no longer generated randomly on every startup.
+    // Now it is read from application.properties, so tokens remain valid after restarts.
     @Value("${jwt.secret}")
     private String jwtSecretString;
 
@@ -32,7 +32,7 @@ public class JwtTokenProvider {
                 .subject(username)
                 .claim("roles", roles)
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + 86400000)) // 1 día de validez
+                .expiration(new Date(System.currentTimeMillis() + 86400000)) // 1 day of validity
                 .signWith(jwtSecret)
                 .compact();
     }

@@ -16,23 +16,23 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.core.io.Resource;
-import es.codeurjc.web.model.Consejo;
-import es.codeurjc.web.model.Usuario;
-import es.codeurjc.web.service.ConsejoService;
-import es.codeurjc.web.service.UsuarioService;
+import es.codeurjc.web.model.Advice;
+import es.codeurjc.web.model.User;
+import es.codeurjc.web.service.AdviceService;
+import es.codeurjc.web.service.UserService;
 
 @Controller
-public class ConsejoController {
+public class AdviceController {
 
     @Autowired
-    private ConsejoService consejoService;
+    private AdviceService adviceService;
     
-    // Añadimos dependencia del servicio de usuario para las validaciones de acceso
+    // Adding user service dependency for access validations
     @Autowired
-    private UsuarioService usuarioService;
+    private UserService userService;
 
-    // FIX Mass Assignment: Ya no aceptamos la entidad completa por data binding.
-    // Recibimos cada campo por separado y construimos manualmente el objeto.
+    // FIX Mass Assignment: We no longer accept the complete entity via data binding.
+    // We receive each field separately and manually build the object.
     @PostMapping("/advice-create")
     public String createAdvice(@RequestParam String title,
                                @RequestParam String category,
@@ -43,19 +43,19 @@ public class ConsejoController {
                                @RequestParam(value = "attachmentFile", required = false) MultipartFile attachmentFile) throws IOException {
         Principal principal = request.getUserPrincipal();
         if (principal != null) {
-            Consejo consejo = new Consejo(title, category, price, secretText, null);
-            consejoService.createAdvice(consejo, principal.getName(), imageFile, attachmentFile);
+            Advice advice = new Advice(title, category, price, secretText, null);
+            adviceService.createAdvice(advice, principal.getName(), imageFile, attachmentFile);
         }
         return "redirect:/profile-view"; 
     }
 
     @GetMapping("/advice/{id}/image")
     public ResponseEntity<byte[]> downloadImage(@PathVariable Long id) {
-        Optional<Consejo> consejo = consejoService.findById(id);
-        if (consejo.isPresent() && consejo.get().getImageBytes() != null) {
+        Optional<Advice> advice = adviceService.findById(id);
+        if (advice.isPresent() && advice.get().getImageBytes() != null) {
             return ResponseEntity.ok()
                     .header(HttpHeaders.CONTENT_TYPE, "image/jpeg")
-                    .body(consejo.get().getImageBytes());
+                    .body(advice.get().getImageBytes());
         }
         return ResponseEntity.notFound().build();
     }
@@ -67,21 +67,21 @@ public class ConsejoController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         
-        Optional<Consejo> consejoOpt = consejoService.findById(id);
-        if (consejoOpt.isPresent()) {
-            Consejo consejo = consejoOpt.get();
-            Usuario user = usuarioService.findByEmail(principal.getName()).orElseThrow();
+        Optional<Advice> adviceOpt = adviceService.findById(id);
+        if (adviceOpt.isPresent()) {
+            Advice advice = adviceOpt.get();
+            User user = userService.findByEmail(principal.getName()).orElseThrow();
             
-            // FIX: Validamos que el usuario tiene acceso al material (IDOR)
-            boolean isSeller = consejo.getSeller().getId().equals(user.getId());
+            // FIX: Validate that the user has access to the material (IDOR)
+            boolean isSeller = advice.getSeller().getId().equals(user.getId());
             boolean isAdmin = request.isUserInRole("ADMIN") || request.isUserInRole("ROLE_ADMIN");
-            boolean hasBought = user.getCompras().stream().anyMatch(t -> t.getConsejo().getId().equals(id));
+            boolean hasBought = user.getPurchases().stream().anyMatch(t -> t.getAdvice().getId().equals(id));
             
             if (isSeller || isAdmin || hasBought) {
-                Resource file = consejoService.getAttachmentResource(id);
+                Resource file = adviceService.getAttachmentResource(id);
                 if (file != null) {
                     return ResponseEntity.ok()
-                            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + consejo.getAttachmentName() + "\"")
+                            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + advice.getAttachmentName() + "\"")
                             .body(file);
                 }
             } else {
@@ -98,9 +98,9 @@ public class ConsejoController {
 
     @GetMapping("/advice-detail/{id}")
     public String showAdviceDetail(@PathVariable Long id, Model model) {
-        Optional<Consejo> optionalConsejo = consejoService.findById(id);
-        if (optionalConsejo.isPresent()) {
-            model.addAttribute("consejo", optionalConsejo.get());
+        Optional<Advice> optionalAdvice = adviceService.findById(id);
+        if (optionalAdvice.isPresent()) {
+            model.addAttribute("advice", optionalAdvice.get());
             return "advice-detail";
         }
         return "error"; 
@@ -110,7 +110,7 @@ public class ConsejoController {
     public String deleteAdvice(@PathVariable Long id, HttpServletRequest request) {
         Principal principal = request.getUserPrincipal();
         if (principal != null) {
-            consejoService.deleteAdvice(id, principal.getName());
+            adviceService.deleteAdvice(id, principal.getName());
         }
         return "redirect:/profile-view";
     }
@@ -119,16 +119,16 @@ public class ConsejoController {
     public String showEditForm(@PathVariable Long id, Model model, HttpServletRequest request) {
         Principal principal = request.getUserPrincipal();
         if (principal != null) {
-            Optional<Consejo> consejo = consejoService.findById(id);
-            if (consejo.isPresent() && consejo.get().getSeller().getEmail().equals(principal.getName())) {
-                model.addAttribute("consejo", consejo.get());
+            Optional<Advice> advice = adviceService.findById(id);
+            if (advice.isPresent() && advice.get().getSeller().getEmail().equals(principal.getName())) {
+                model.addAttribute("advice", advice.get());
                 return "advice-edit";
             }
         }
         return "redirect:/profile-view";
     }
 
-    // FIX Mass Assignment: Mismo tratamiento que en advice-create. Parámetros individuales.
+    // FIX Mass Assignment: Same handling as in advice-create. Individual parameters.
     @PostMapping("/advice-edit/{id}")
     public String processEditForm(@PathVariable Long id, 
                                   @RequestParam String title,
@@ -140,12 +140,12 @@ public class ConsejoController {
                                   HttpServletRequest request) throws IOException {
         Principal principal = request.getUserPrincipal();
         if (principal != null) {
-            Consejo consejoDetalles = new Consejo();
-            consejoDetalles.setTitle(title);
-            consejoDetalles.setCategory(category);
-            consejoDetalles.setPrice(price);
-            consejoDetalles.setSecretText(secretText);
-            consejoService.updateAdvice(id, consejoDetalles, principal.getName(), imageFile, attachmentFile);
+            Advice adviceDetails = new Advice();
+            adviceDetails.setTitle(title);
+            adviceDetails.setCategory(category);
+            adviceDetails.setPrice(price);
+            adviceDetails.setSecretText(secretText);
+            adviceService.updateAdvice(id, adviceDetails, principal.getName(), imageFile, attachmentFile);
         }
         return "redirect:/profile-view";
     }
@@ -156,18 +156,18 @@ public class ConsejoController {
         if (principal == null) {
             return "redirect:/login";
         }
-        Optional<Consejo> consejoOpt = consejoService.findById(id);
-        if (consejoOpt.isPresent()) {
-            Consejo consejo = consejoOpt.get();
-            Usuario user = usuarioService.findByEmail(principal.getName()).orElseThrow();
+        Optional<Advice> adviceOpt = adviceService.findById(id);
+        if (adviceOpt.isPresent()) {
+            Advice advice = adviceOpt.get();
+            User user = userService.findByEmail(principal.getName()).orElseThrow();
             
-            // FIX: Validar si ha pagado antes de mostrar la plantilla de contenido secreto
-            boolean isSeller = consejo.getSeller().getId().equals(user.getId());
+            // FIX: Validate if paid before showing the secret content template
+            boolean isSeller = advice.getSeller().getId().equals(user.getId());
             boolean isAdmin = request.isUserInRole("ADMIN") || request.isUserInRole("ROLE_ADMIN");
-            boolean hasBought = user.getCompras().stream().anyMatch(t -> t.getConsejo().getId().equals(id));
+            boolean hasBought = user.getPurchases().stream().anyMatch(t -> t.getAdvice().getId().equals(id));
             
             if (isSeller || isAdmin || hasBought) {
-                model.addAttribute("consejo", consejo);
+                model.addAttribute("advice", advice);
                 return "advice-secret";
             } else {
                 return "redirect:/advice-detail/" + id;

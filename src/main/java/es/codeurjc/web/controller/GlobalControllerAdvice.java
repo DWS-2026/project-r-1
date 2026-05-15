@@ -7,7 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.ui.Model;
 import org.springframework.security.web.csrf.CsrfToken;
 
-// Restringimos el Advice solo a este paquete para evitar que rompa el controlador interno de OpenAPI
+// We restrict the Advice only to this package to prevent breaking the internal OpenAPI controller
 @ControllerAdvice(basePackages = "es.codeurjc.web.controller")
 public class GlobalControllerAdvice {
 
@@ -25,7 +25,7 @@ public class GlobalControllerAdvice {
             model.addAttribute("logged", false);
         }
 
-        // Inyección global del token CSRF para todos los formularios de la web
+        // Global injection of the CSRF token for all forms on the web
         CsrfToken csrfToken = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
         if (csrfToken != null) {
             model.addAttribute("_csrf", csrfToken);

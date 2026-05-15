@@ -1,56 +1,56 @@
 {{>header}}
 
-<!-- Añadimos el CSS de Quill en la cabecera -->
+<!-- We add the Quill CSS in the header -->
 <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 
     <div class="container" style="max-width: 800px;">
         
         <div class="border p-4 mb-5 mt-4 shadow-sm">
-            <h3>Editar Consejo</h3>
-            <p class="text-muted">Modifica los datos de tu producto.</p>
+            <h3>Edit Advice</h3>
+            <p class="text-muted">Modify your product's data.</p>
             <hr>
             
-            {{#consejo}}
+            {{#advice}}
             <form id="advice-edit-form" action="/advice-edit/{{id}}" method="POST" enctype="multipart/form-data">
                 
                 <input type="hidden" name="_csrf" value="{{_csrf.token}}"/>
 
                 <div class="mb-3">
-                    <label class="form-label">Título del Consejo:</label>
+                    <label class="form-label">Advice Title:</label>
                     <input type="text" name="title" class="form-control" value="{{title}}" required>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">Categoría:</label>
+                    <label class="form-label">Category:</label>
                     <input type="text" name="category" class="form-control" value="{{category}}" required>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label">Precio (€):</label>
+                    <label class="form-label">Price (€):</label>
                     <input type="number" step="0.01" name="price" class="form-control" value="{{price}}" required>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label d-block">Imagen de Portada:</label>
+                    <label class="form-label d-block">Cover Image:</label>
                     <div class="mb-2">
-                        <img src="/advice/{{id}}/image" alt="Imagen actual" class="img-thumbnail" style="height: 150px; object-fit: cover;">
-                        <span class="text-muted ms-2 small">Imagen actual</span>
+                        <img src="/advice/{{id}}/image" alt="Current image" class="img-thumbnail" style="height: 150px; object-fit: cover;">
+                        <span class="text-muted ms-2 small">Current image</span>
                     </div>
-                    <label class="form-label small text-muted">Subir nueva imagen (opcional):</label>
+                    <label class="form-label small text-muted">Upload new image (optional):</label>
                     <input type="file" name="imageFile" class="form-control" accept="image/*">
                 </div>
 
                 <div class="mb-4 bg-light p-3 border rounded">
-                    <label class="form-label text-primary"><strong>📎 Documento Adjunto Extra (Opcional):</strong></label>
+                    <label class="form-label text-primary"><strong>📎 Extra Attached Document (Optional):</strong></label>
                     {{#attachmentName}}
-                        <p class="text-success small mb-1">Archivo actual: <strong>{{attachmentName}}</strong></p>
+                        <p class="text-success small mb-1">Current file: <strong>{{attachmentName}}</strong></p>
                     {{/attachmentName}}
-                    <label class="form-label small text-muted">Subir nuevo archivo (sobrescribirá el anterior):</label>
+                    <label class="form-label small text-muted">Upload new file (will overwrite the previous one):</label>
                     <input type="file" name="attachmentFile" class="form-control">
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label"><strong>Texto Secreto (Solo visible tras pagar):</strong></label>
+                    <label class="form-label"><strong>Secret Text (Only visible after paying):</strong></label>
                     
                     <div id="editor-container" style="height: 200px; background-color: white;"></div>
                     
@@ -59,20 +59,20 @@
                     <input type="hidden" name="secretText" id="hiddenSecretText">
                 </div>
 
-                <button type="submit" class="btn btn-success w-100 mb-2">Guardar Cambios</button>
+                <button type="submit" class="btn btn-success w-100 mb-2">Save Changes</button>
             </form>
             
-            <form action="/advice-delete/{{id}}" method="POST" onsubmit="return confirm('¿Estás seguro de que quieres borrar este consejo?');">
+            <form action="/advice-delete/{{id}}" method="POST" onsubmit="return confirm('Are you sure you want to delete this advice?');">
                 <input type="hidden" name="_csrf" value="{{_csrf.token}}"/>
-                <button type="submit" class="btn btn-outline-danger w-100">Eliminar Consejo</button>
+                <button type="submit" class="btn btn-outline-danger w-100">Delete Advice</button>
             </form>
-            {{/consejo}}
+            {{/advice}}
 
         </div>
 
     </div>
 
-<!-- Script de Quill -->
+<!-- Quill Script -->
 <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
 <script>
     var quill = new Quill('#editor-container', {

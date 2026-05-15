@@ -2,15 +2,15 @@ package es.codeurjc.web.dto;
 
 import java.time.LocalDateTime;
 
-public record TransaccionDTO(
+public record TransactionDTO(
         Long id,
         
-        // Evitamos meter los objetos completos Usuario y Consejo
+        // We avoid putting complete User and Advice objects
         Long buyerId,
         String buyerName,
         
-        Long consejoId,
-        String consejoTitle,
+        Long adviceId,
+        String adviceTitle,
         
         double priceAtPurchase,
         LocalDateTime purchaseDate

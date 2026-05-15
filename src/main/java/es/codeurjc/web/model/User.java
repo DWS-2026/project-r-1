@@ -9,41 +9,45 @@ import jakarta.persistence.ElementCollection;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column; // Añadido
+import jakarta.persistence.Column; 
+import jakarta.persistence.Table; 
 import java.util.ArrayList;
 
 @Entity
-public class Usuario {
+@Table(name = "users")
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private String nombre;
+    private String name;
     
-    // FIX Race Condition: Exigir unicidad en la base de datos de manera estricta
+    // FIX Race Condition: Demand uniqueness in the database strictly
     @Column(unique = true, nullable = false)
     private String email;
     
-    private String contrasena;
+    private String password;
 
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> roles;
 
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Consejo> consejos = new ArrayList<>();
+    private List<Advice> advices = new ArrayList<>();
+    
     @OneToMany(mappedBy = "buyer", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Transaccion> compras = new ArrayList<>();
+    private List<Transaction> purchases = new ArrayList<>();
+    
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Valoracion> valoraciones = new ArrayList<>();
+    private List<Review> reviews = new ArrayList<>();
 
-    public Usuario() {
+    public User() {
     }
 
-    public Usuario(String nombre, String email, String contrasena) {
-        this.nombre = nombre;
+    public User(String name, String email, String password) {
+        this.name = name;
         this.email = email;
-        this.contrasena = contrasena;
+        this.password = password;
         this.roles = List.of("USER");
     }
 
@@ -55,12 +59,12 @@ public class Usuario {
         this.id = id;
     }
 
-    public String getNombre() {
-        return nombre;
+    public String getName() {
+        return name;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getEmail() {
@@ -71,12 +75,12 @@ public class Usuario {
         this.email = email;
     }
 
-    public String getContrasena() {
-        return contrasena;
+    public String getPassword() {
+        return password;
     }
 
-    public void setContrasena(String contrasena) {
-        this.contrasena = contrasena;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public List<String> getRoles() {
@@ -87,28 +91,28 @@ public class Usuario {
         this.roles = roles;
     }
 
-    public List<Consejo> getConsejos() {
-        return consejos;
+    public List<Advice> getAdvices() {
+        return advices;
     }
 
-    public void setConsejos(List<Consejo> consejos) {
-        this.consejos = consejos;
+    public void setAdvices(List<Advice> advices) {
+        this.advices = advices;
     }
 
-    public List<Transaccion> getCompras() {
-        return compras;
+    public List<Transaction> getPurchases() {
+        return purchases;
     }
 
-    public void setCompras(List<Transaccion> compras) {
-        this.compras = compras;
+    public void setPurchases(List<Transaction> purchases) {
+        this.purchases = purchases;
     }
 
-    public List<Valoracion> getValoraciones() {
-        return valoraciones;
+    public List<Review> getReviews() {
+        return reviews;
     }
 
-    public void setValoraciones(List<Valoracion> valoraciones) {
-        this.valoraciones = valoraciones;
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
     }
 
 }

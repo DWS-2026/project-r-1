@@ -1,27 +1,26 @@
-
 {{>header}}
 
     <div class="container" style="max-width: 500px;"> 
         <div class="border p-4 mb-5">
-            <h3 class="text-center">Iniciar Sesión</h3>
+            <h3 class="text-center">Sign In</h3>
             <hr>
             
             <form action="/login" method="post">
                 <div class="mb-3">
                     <label class="form-label">Email:</label>
-                    <input type="email" name="username" class="form-control" placeholder="usuario@urjc.es" required>
+                    <input type="email" name="username" class="form-control" placeholder="user@urjc.es" required>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">Contraseña:</label>
+                    <label class="form-label">Password:</label>
                     <input type="password" name="password" class="form-control" required>
                 </div>
 
                 <input type="hidden" name="_csrf" value="{{_csrf.token}}"/>
-                <button type="submit" class="btn btn-primary w-100">Entrar</button>
+                <button type="submit" class="btn btn-primary w-100">Enter</button>
             </form>
             
             <div class="mt-3 text-center">
-                <p>¿No tienes cuenta? <a href="/register">Regístrate aquí</a></p>
+                <p>Don't have an account? <a href="/register">Register here</a></p>
             </div>
         </div>
     </div>

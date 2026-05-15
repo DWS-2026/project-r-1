@@ -2,7 +2,7 @@
 
 <div class="container" style="max-width: 600px;">
     <div class="border p-4 mb-5">
-        <h3 class="text-center">Crear Cuenta Nueva</h3>
+        <h3 class="text-center">Create New Account</h3>
         <hr>
 
         {{#errorMsg}}
@@ -11,22 +11,22 @@
             </div>
         {{/errorMsg}}
         
-        <form action="/registro" method="post">
-            <p>Nombre:</p>
-            <input type="text" name="nombre" required />
+        <form action="/register" method="post">
+            <p>Name:</p>
+            <input type="text" name="name" required />
 
             <p>Email:</p>
             <input type="email" name="email" required />
 
-            <p>Contraseña:</p>
-            <input type="password" name="contrasena" required />
+            <p>Password:</p>
+            <input type="password" name="password" required />
 
-            <p>Foto de perfil:</p>
+            <p>Profile picture:</p>
             <input type="file" name="fotoPerfil" />
 
             <input type="hidden" name="_csrf" value="{{_csrf.token}}" />
 
-            <input type="submit" value="Registrarse" />
+            <input type="submit" value="Register" />
         </form>
 
 

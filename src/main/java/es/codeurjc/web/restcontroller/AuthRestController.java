@@ -1,7 +1,7 @@
 package es.codeurjc.web.restcontroller;
 
-import es.codeurjc.web.model.Usuario;
-import es.codeurjc.web.service.UsuarioService;
+import es.codeurjc.web.model.User;
+import es.codeurjc.web.service.UserService;
 import es.codeurjc.web.security.jwt.AuthResponse;
 import es.codeurjc.web.security.jwt.JwtTokenProvider;
 import es.codeurjc.web.security.jwt.LoginRequest;
@@ -28,7 +28,7 @@ public class AuthRestController {
     private JwtTokenProvider jwtTokenProvider;
 
     @Autowired
-    private UsuarioService usuarioService;
+    private UserService userService;
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest loginRequest) {
@@ -44,16 +44,16 @@ public class AuthRestController {
         return ResponseEntity.ok(new AuthResponse(token));
     }
 
-    // --- NUEVO ENDPOINT DE REGISTRO ---
+    // --- NEW SIGNUP ENDPOINT ---
     @PostMapping("/signup")
     public ResponseEntity<String> signup(@Valid @RequestBody SignupRequest request) {
-        Usuario nuevoUsuario = new Usuario(request.getNombre(), request.getEmail(), request.getPassword());
-        boolean registrado = usuarioService.registrarNuevoUsuario(nuevoUsuario);
+        User newUser = new User(request.getName(), request.getEmail(), request.getPassword());
+        boolean registered = userService.registerNewUser(newUser);
         
-        if (!registrado) {
-            return ResponseEntity.badRequest().body("El email ya está en uso");
+        if (!registered) {
+            return ResponseEntity.badRequest().body("Email is already in use");
         }
         
-        return ResponseEntity.status(201).body("Usuario registrado con éxito");
+        return ResponseEntity.status(201).body("User successfully registered");
     }
 }

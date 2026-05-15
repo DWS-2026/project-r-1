@@ -54,25 +54,25 @@ public class SecurityConfig {
         );
         
         http.authorizeHttpRequests(authorize -> authorize
-                // Endpoints públicos de autenticación
+                // Public authentication endpoints
                 .requestMatchers(HttpMethod.POST, "/api/v1/auth/login", "/api/v1/auth/signup").permitAll()
 
-                // FIX: El attachment NO es público. Lo forzamos a autenticado antes del wildcard permitAll.
-                .requestMatchers(HttpMethod.GET, "/api/v1/consejos/*/attachment").authenticated()
+                // FIX: The attachment is NOT public. We force it to be authenticated before the wildcard permitAll.
+                .requestMatchers(HttpMethod.GET, "/api/v1/advices/*/attachment").authenticated()
 
-                // Lectura pública del catálogo de consejos e imágenes
-                .requestMatchers(HttpMethod.GET, "/api/v1/consejos/**").permitAll()
+                // Public reading of the advice catalog and images
+                .requestMatchers(HttpMethod.GET, "/api/v1/advices/**").permitAll()
 
-                // FIX IDOR: La lectura de cualquier valoración es pública (listado y detalle)
-                .requestMatchers(HttpMethod.GET, "/api/v1/valoraciones/").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/v1/valoraciones/{id}").permitAll()
+                // FIX IDOR: Reading any review is public (list and detail)
+                .requestMatchers(HttpMethod.GET, "/api/v1/reviews/").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/v1/reviews/{id}").permitAll()
 
-                // FIX IDOR: Solo el admin puede consultar datos de otros usuarios por ID o listarlos
-                .requestMatchers(HttpMethod.GET, "/api/v1/usuarios/**").hasRole("ADMIN")
+                // FIX IDOR: Only the admin can check data of other users by ID or list them
+                .requestMatchers(HttpMethod.GET, "/api/v1/users/**").hasRole("ADMIN")
 
-                // FIX FUGA DE DATOS: Solo el admin puede ver el listado global de transacciones
-                // El endpoint /me sigue accesible para usuarios autenticados gracias a anyRequest().authenticated()
-                .requestMatchers(HttpMethod.GET, "/api/v1/transacciones/").hasRole("ADMIN")
+                // FIX DATA LEAK: Only the admin can see the global list of transactions
+                // The /me endpoint remains accessible to authenticated users thanks to anyRequest().authenticated()
+                .requestMatchers(HttpMethod.GET, "/api/v1/transactions/").hasRole("ADMIN")
 
                 .anyRequest().authenticated()
         );
@@ -91,9 +91,9 @@ public class SecurityConfig {
     @Order(2)
     public SecurityFilterChain webFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/", "/registro", "/error", "/register", "/css/**", "/js/**", "/image/**", "/advice/*/image", "/advice-detail/**").permitAll()
+                .requestMatchers("/", "/register", "/error", "/css/**", "/js/**", "/image/**", "/advice/*/image", "/advice-detail/**").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN") 
-                // FIX Info Disclosure: Swagger/OpenAPI solo para administradores
+                // FIX Info Disclosure: Swagger/OpenAPI only for administrators
                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").hasRole("ADMIN")
                 .anyRequest().authenticated()
         );

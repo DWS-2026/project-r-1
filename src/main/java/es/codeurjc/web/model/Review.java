@@ -3,7 +3,7 @@ package es.codeurjc.web.model;
 import jakarta.persistence.*;
 
 @Entity
-public class Valoracion {
+public class Review {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -11,27 +11,27 @@ public class Valoracion {
 
     // The user who wrote the review
     @ManyToOne
-    private Usuario author;
+    private User author;
 
     // The advice being reviewed
     @ManyToOne
-    private Consejo consejo;
+    private Advice advice;
 
     // Rating score (e.g., from 1 to 5 stars)
     private int score;
 
     private String title;
 
-    // Actualiza tu constructor para que incluya el title:
-    public Valoracion(Usuario author, Consejo consejo, int score, String title, String comment) {
+    // Update constructor to include title:
+    public Review(User author, Advice advice, int score, String title, String comment) {
         this.author = author;
-        this.consejo = consejo;
+        this.advice = advice;
         this.score = score;
         this.title = title;
         this.comment = comment;
     }
 
-    // Añade los getters y setters del title:
+    // Add getters and setters for title:
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
 
@@ -39,12 +39,12 @@ public class Valoracion {
     @Column(columnDefinition = "TEXT")
     private String comment;
 
-    // AHORA ES PUBLIC PARA QUE MAPSTRUCT NO FALLE
-    public Valoracion() {}
+    // NOW PUBLIC SO MAPSTRUCT DOES NOT FAIL
+    public Review() {}
 
-    public Valoracion(Usuario author, Consejo consejo, int score, String comment) {
+    public Review(User author, Advice advice, int score, String comment) {
         this.author = author;
-        this.consejo = consejo;
+        this.advice = advice;
         this.score = score;
         this.comment = comment;
     }
@@ -54,11 +54,11 @@ public class Valoracion {
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public Usuario getAuthor() { return author; }
-    public void setAuthor(Usuario author) { this.author = author; }
+    public User getAuthor() { return author; }
+    public void setAuthor(User author) { this.author = author; }
 
-    public Consejo getConsejo() { return consejo; }
-    public void setConsejo(Consejo consejo) { this.consejo = consejo; }
+    public Advice getAdvice() { return advice; }
+    public void setAdvice(Advice advice) { this.advice = advice; }
 
     public int getScore() { return score; }
     public void setScore(int score) { this.score = score; }

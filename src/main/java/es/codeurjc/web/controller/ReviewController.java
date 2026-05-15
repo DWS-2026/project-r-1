@@ -10,42 +10,42 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import es.codeurjc.web.model.Consejo;
-import es.codeurjc.web.model.Usuario;
-import es.codeurjc.web.model.Valoracion;
-import es.codeurjc.web.service.ConsejoService;
-import es.codeurjc.web.service.UsuarioService;
-import es.codeurjc.web.service.ValoracionService;
+import es.codeurjc.web.model.Advice;
+import es.codeurjc.web.model.User;
+import es.codeurjc.web.model.Review;
+import es.codeurjc.web.service.AdviceService;
+import es.codeurjc.web.service.UserService;
+import es.codeurjc.web.service.ReviewService;
 
 @Controller
-public class ValoracionController {
+public class ReviewController {
 
-    @Autowired private ValoracionService valoracionService;
-    @Autowired private ConsejoService consejoService;
-    @Autowired private UsuarioService usuarioService;
+    @Autowired private ReviewService reviewService;
+    @Autowired private AdviceService adviceService;
+    @Autowired private UserService userService;
 
-    @GetMapping("/review-create/{consejoId}")
-    public String showCreateForm(@PathVariable Long consejoId, Model model, HttpServletRequest request) {
+    @GetMapping("/review-create/{adviceId}")
+    public String showCreateForm(@PathVariable Long adviceId, Model model, HttpServletRequest request) {
         Principal principal = request.getUserPrincipal();
         if (principal == null) return "redirect:/login";
 
-        Usuario user = usuarioService.findByEmail(principal.getName()).orElseThrow();
-        Consejo consejo = consejoService.findById(consejoId).orElseThrow();
+        User user = userService.findByEmail(principal.getName()).orElseThrow();
+        Advice advice = adviceService.findById(adviceId).orElseThrow();
 
-        Optional<Valoracion> existingReview = valoracionService.findByAuthorAndConsejo(user, consejo);
+        Optional<Review> existingReview = reviewService.findByAuthorAndAdvice(user, advice);
         if (existingReview.isPresent()) {
             return "redirect:/review-edit/" + existingReview.get().getId();
         }
 
-        model.addAttribute("consejo", consejo);
+        model.addAttribute("advice", advice);
         return "review-create";
     }
 
-    @PostMapping("/review-create/{consejoId}")
-    public String processCreate(@PathVariable Long consejoId, @RequestParam String title, @RequestParam int score, @RequestParam String comment, HttpServletRequest request) {
+    @PostMapping("/review-create/{adviceId}")
+    public String processCreate(@PathVariable Long adviceId, @RequestParam String title, @RequestParam int score, @RequestParam String comment, HttpServletRequest request) {
         Principal principal = request.getUserPrincipal();
         if (principal != null) {
-            valoracionService.createReview(consejoId, principal.getName(), title, score, comment);
+            reviewService.createReview(adviceId, principal.getName(), title, score, comment);
         }
         return "redirect:/profile-view";
     }
@@ -54,7 +54,7 @@ public class ValoracionController {
     public String showEditForm(@PathVariable Long id, Model model, HttpServletRequest request) {
         Principal principal = request.getUserPrincipal();
         if (principal != null) {
-            Optional<Valoracion> v = valoracionService.findById(id);
+            Optional<Review> v = reviewService.findById(id);
             if (v.isPresent() && v.get().getAuthor().getEmail().equals(principal.getName())) {
                 model.addAttribute("review", v.get());
                 return "review-edit";
@@ -67,7 +67,7 @@ public class ValoracionController {
     public String processEdit(@PathVariable Long id, @RequestParam String title, @RequestParam int score, @RequestParam String comment, HttpServletRequest request) {
         Principal principal = request.getUserPrincipal();
         if (principal != null) {
-            valoracionService.updateReview(id, principal.getName(), title, score, comment);
+            reviewService.updateReview(id, principal.getName(), title, score, comment);
         }
         return "redirect:/profile-view";
     }
@@ -76,7 +76,7 @@ public class ValoracionController {
     public String deleteReview(@PathVariable Long id, HttpServletRequest request) {
         Principal principal = request.getUserPrincipal();
         if (principal != null) {
-            valoracionService.deleteReview(id, principal.getName());
+            reviewService.deleteReview(id, principal.getName());
         }
         return "redirect:/profile-view";
     }

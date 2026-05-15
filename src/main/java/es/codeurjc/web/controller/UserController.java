@@ -8,39 +8,39 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import es.codeurjc.web.model.Usuario;
-import es.codeurjc.web.service.ConsejoService;
-import es.codeurjc.web.service.TransaccionService;
-import es.codeurjc.web.service.UsuarioService;
+import es.codeurjc.web.model.User;
+import es.codeurjc.web.service.AdviceService;
+import es.codeurjc.web.service.TransactionService;
+import es.codeurjc.web.service.UserService;
 
 @Controller
-public class UsuarioController {
+public class UserController {
 
     @Autowired
-    private UsuarioService usuarioService;
+    private UserService userService;
 
     @Autowired
-    private ConsejoService consejoService;
+    private AdviceService adviceService;
 
     @Autowired
-    private TransaccionService transaccionService;
+    private TransactionService transactionService;
 
     @GetMapping("/register")
-    public String mostrarRegistro(Model model) {
+    public String showRegister(Model model) {
         return "register";
     }
 
     @GetMapping("/login")
-    public String mostrarLogin(Model model) {
+    public String showLogin(Model model) {
         return "login";
     }
 
-    // FIX: Leemos parámetros individuales para evitar vulnerabilidad de Mass Assignment (que inyecten id o roles)
-    @PostMapping("/registro")
-    public String registrarUsuario(Model model, @RequestParam String nombre, @RequestParam String email, @RequestParam String contrasena) {
-        Usuario usuario = new Usuario(nombre, email, contrasena);
-        if (!usuarioService.registrarNuevoUsuario(usuario)) {
-            model.addAttribute("errorMsg", "Ese correo electrónico ya está en uso. Por favor, utiliza otro o inicia sesión.");
+    // FIX: We read individual parameters to avoid Mass Assignment vulnerability (injecting ids or roles)
+    @PostMapping("/register")
+    public String registerUser(Model model, @RequestParam String name, @RequestParam String email, @RequestParam String password) {
+        User user = new User(name, email, password);
+        if (!userService.registerNewUser(user)) {
+            model.addAttribute("errorMsg", "That email is already in use. Please use another one or log in.");
             return "register"; 
         }
         return "redirect:/"; 
@@ -50,10 +50,10 @@ public class UsuarioController {
     public String profileView(Model model, HttpServletRequest request) { 
         Principal principal = request.getUserPrincipal();
         if (principal != null) {
-            Usuario user = usuarioService.findByEmail(principal.getName()).orElseThrow();
+            User user = userService.findByEmail(principal.getName()).orElseThrow();
             model.addAttribute("userProfile", user);
-            model.addAttribute("sellingAdvices", consejoService.findBySeller(user));
-            model.addAttribute("purchasedTransactions", transaccionService.findByBuyer(user));
+            model.addAttribute("sellingAdvices", adviceService.findBySeller(user));
+            model.addAttribute("purchasedTransactions", transactionService.findByBuyer(user));
         }
         return "profile-view";
     }
@@ -62,7 +62,7 @@ public class UsuarioController {
     public String showProfileEditForm(Model model, HttpServletRequest request) {
         Principal principal = request.getUserPrincipal();
         if (principal != null) {
-            Usuario user = usuarioService.findByEmail(principal.getName()).orElseThrow();
+            User user = userService.findByEmail(principal.getName()).orElseThrow();
             model.addAttribute("userProfile", user);
             return "profile-edit";
         }
@@ -70,13 +70,13 @@ public class UsuarioController {
     }
 
     @PostMapping("/profile-edit")
-    public String processProfileEdit(@RequestParam String nombre,
+    public String processProfileEdit(@RequestParam String name,
             @RequestParam(required = false) String password,
             @RequestParam(required = false) String confirmPassword,
             HttpServletRequest request) {
         Principal principal = request.getUserPrincipal();
         if (principal != null) {
-            usuarioService.updateProfile(principal.getName(), nombre, password, confirmPassword);
+            userService.updateProfile(principal.getName(), name, password, confirmPassword);
         }
         return "redirect:/profile-view";
     }
@@ -85,7 +85,7 @@ public class UsuarioController {
     public String deleteOwnAccount(HttpServletRequest request) throws Exception {
         Principal principal = request.getUserPrincipal();
         if (principal != null) {
-            usuarioService.deleteUserByEmail(principal.getName());
+            userService.deleteUserByEmail(principal.getName());
             request.logout();
         }
         return "redirect:/";

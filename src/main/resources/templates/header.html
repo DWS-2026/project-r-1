@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,23 +18,23 @@
             
             <div class="col-md-4 text-center">
                 {{#logged}}
-                    <p class="m-0 fw-bold">Logueado con {{userName}}!</p>
+                    <p class="m-0 fw-bold">Logged in as {{userName}}!</p>
                 {{/logged}}
                 {{^logged}}
-                    <p class="m-0 text-muted">Usuario no logueado</p>
+                    <p class="m-0 text-muted">User not logged in</p>
                 {{/logged}}
             </div>
             
             <div class="col-md-4 text-end">
-                <a href="/" class="btn btn-secondary">Catálogo</a>
+                <a href="/" class="btn btn-secondary">Catalog</a>
                 
                 {{#logged}}
-                    <a href="/profile-view" class="btn btn-primary">Mi Perfil</a>
+                    <a href="/profile-view" class="btn btn-primary">My Profile</a>
                 {{/logged}}
                 
                 {{^logged}}
                     <a href="/login" class="btn btn-outline-dark">Login</a>
-                    <a href="/register" class="btn btn-dark">Registro</a>
+                    <a href="/register" class="btn btn-dark">Register</a>
                 {{/logged}}
             </div>
             

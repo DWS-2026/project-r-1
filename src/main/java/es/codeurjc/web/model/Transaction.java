@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-public class Transaccion {
+public class Transaction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -12,11 +12,11 @@ public class Transaccion {
 
     // The user who bought the advice
     @ManyToOne
-    private Usuario buyer;
+    private User buyer;
 
     // The advice that was purchased
     @ManyToOne
-    private Consejo consejo;
+    private Advice advice;
 
     // The date and time the purchase was made
     private LocalDateTime purchaseDate;
@@ -24,12 +24,12 @@ public class Transaccion {
     // Stores the price at the moment of purchase, in case the seller changes it later
     private double priceAtPurchase;
 
-    // AHORA ES PUBLIC PARA QUE MAPSTRUCT NO FALLE
-    public Transaccion() {}
+    // NOW PUBLIC SO MAPSTRUCT DOES NOT FAIL
+    public Transaction() {}
 
-    public Transaccion(Usuario buyer, Consejo consejo, double priceAtPurchase) {
+    public Transaction(User buyer, Advice advice, double priceAtPurchase) {
         this.buyer = buyer;
-        this.consejo = consejo;
+        this.advice = advice;
         this.priceAtPurchase = priceAtPurchase;
         this.purchaseDate = LocalDateTime.now(); // Automatically sets the current time
     }
@@ -39,11 +39,11 @@ public class Transaccion {
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public Usuario getBuyer() { return buyer; }
-    public void setBuyer(Usuario buyer) { this.buyer = buyer; }
+    public User getBuyer() { return buyer; }
+    public void setBuyer(User buyer) { this.buyer = buyer; }
 
-    public Consejo getConsejo() { return consejo; }
-    public void setConsejo(Consejo consejo) { this.consejo = consejo; }
+    public Advice getAdvice() { return advice; }
+    public void setAdvice(Advice advice) { this.advice = advice; }
 
     public LocalDateTime getPurchaseDate() { return purchaseDate; }
     public void setPurchaseDate(LocalDateTime purchaseDate) { this.purchaseDate = purchaseDate; }

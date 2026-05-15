@@ -25,7 +25,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    // Importante: No aplicamos este filtro a las rutas web (HTML) para no romper la navegación con cookies
+    // Important: We do not apply this filter to web routes (HTML) to avoid breaking cookie navigation
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         return !request.getServletPath().startsWith("/api/");
@@ -49,7 +49,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (Exception ex) {
-            // Token inválido o expirado. Dejamos que el flujo continúe y Spring Security denegará el acceso.
+            // Invalid or expired token. We let the flow continue and Spring Security will deny access.
         }
 
         filterChain.doFilter(request, response);

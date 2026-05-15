@@ -14,8 +14,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-// Esta clase evita que si fallas al loguearte en la API REST, Spring te redirija al login HTML.
-// En su lugar, devuelve un JSON de error 401 Unauthorized.
+// This class prevents that if you fail to log in to the REST API, Spring redirects you to the HTML login.
+// Instead, it returns a 401 Unauthorized error JSON.
 @Component
 public class RestUnauthorizedHandler implements AuthenticationEntryPoint {
 
@@ -25,7 +25,7 @@ public class RestUnauthorizedHandler implements AuthenticationEntryPoint {
     public void commence(HttpServletRequest request, HttpServletResponse response,
             AuthenticationException authException) throws IOException, ServletException {
         
-        logger.error("Error de autenticación REST: {}", authException.getMessage());
+        logger.error("REST Authentication Error: {}", authException.getMessage());
         
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -33,8 +33,8 @@ public class RestUnauthorizedHandler implements AuthenticationEntryPoint {
         final Map<String, Object> body = new HashMap<>();
         body.put("status", HttpServletResponse.SC_UNAUTHORIZED);
         body.put("error", "Unauthorized");
-        // FIX INFO LEAK: Nunca devolvemos el mensaje interno de la excepción al cliente
-        body.put("message", "Credenciales inválidas o token ausente.");
+        // FIX INFO LEAK: We never return the internal exception message to the client
+        body.put("message", "Invalid credentials or missing token.");
         body.put("path", request.getServletPath());
 
         final ObjectMapper mapper = new ObjectMapper();

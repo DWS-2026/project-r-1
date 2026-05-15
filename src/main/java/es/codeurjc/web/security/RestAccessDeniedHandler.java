@@ -12,7 +12,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-// Esta clase evitará que un "403 Forbidden" (sin permisos) devuelva un HTML de Spring Boot.
+// This class will prevent a "403 Forbidden" (without permissions) from returning a Spring Boot HTML.
 @Component
 public class RestAccessDeniedHandler implements AccessDeniedHandler {
 
@@ -26,7 +26,7 @@ public class RestAccessDeniedHandler implements AccessDeniedHandler {
         final Map<String, Object> body = new HashMap<>();
         body.put("status", HttpServletResponse.SC_FORBIDDEN);
         body.put("error", "Forbidden");
-        body.put("message", "Acceso denegado: No tienes permisos suficientes.");
+        body.put("message", "Access denied: You do not have sufficient permissions.");
         body.put("path", request.getServletPath());
 
         final ObjectMapper mapper = new ObjectMapper();

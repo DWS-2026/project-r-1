@@ -2,56 +2,56 @@
 
     <div class="container">
         
-        {{#consejo}}
+        {{#advice}}
         <div class="row">
             <div class="col-md-6 mb-4">
                 <div class="border p-2">
-                    <img src="/advice/{{id}}/image" alt="Detalle Consejo" class="img-fluid w-100" style="object-fit: contain; max-height: 400px;">
+                    <img src="/advice/{{id}}/image" alt="Advice Detail" class="img-fluid w-100" style="object-fit: contain; max-height: 400px;">
                 </div>
             </div>
 
             <div class="col-md-6">
                 <h1 class="display-5">{{title}}</h1>
-                <p class="text-muted">Categoría: <span class="badge bg-danger">{{category}}</span></p>
+                <p class="text-muted">Category: <span class="badge bg-danger">{{category}}</span></p>
                 
                 {{#seller}}
-                    <p>Vendido por: <strong>{{nombre}}</strong></p>
+                    <p>Sold by: <strong>{{name}}</strong></p>
                 {{/seller}}
                 {{^seller}}
-                    <p>Vendido por: <strong>Usuario Anónimo</strong></p>
+                    <p>Sold by: <strong>Anonymous User</strong></p>
                 {{/seller}}
                 
                 <hr>
                 
-                <p class="lead">Este consejo cambiará tu vida. Basado en hechos reales y 100% efectivo.</p>
+                <p class="lead">This advice will change your life. Based on true events and 100% effective.</p>
                 
                 <div class="bg-light p-4 border mb-4">
                     <h2 class="text-success">{{price}} €</h2>
-                    <p class="small text-muted">El contenido secreto se desbloqueará tras el pago.</p>
-                    <a href="/transaction-create/{{id}}" class="btn btn-primary btn-lg w-100">Comprar Consejo</a>
+                    <p class="small text-muted">The secret content will be unlocked after payment.</p>
+                    <a href="/transaction-create/{{id}}" class="btn btn-primary btn-lg w-100">Buy Advice</a>
                 </div>
             </div>
         </div>
 
         <hr class="my-5">
 
-        <h3>Valoraciones de usuarios</h3>
+        <h3>User Reviews</h3>
         <div class="mb-5">
             {{#reviews}}
                 <div class="border p-3 mb-2">
-                    <strong>{{author.nombre}}:</strong>
-                    <span class="text-warning">Valoración: {{score}}/5</span>
+                    <strong>{{author.name}}:</strong>
+                    <span class="text-warning">Score: {{score}}/5</span>
                     <p class="m-0">{{comment}}</p>
                 </div>
             {{/reviews}}
             
             {{^reviews}}
                 <div class="border p-3 mb-2 text-center text-muted">
-                    <p class="m-0">Aún no hay valoraciones para este consejo.</p>
+                    <p class="m-0">There are no reviews for this advice yet.</p>
                 </div>
             {{/reviews}}
         </div>
-        {{/consejo}}
+        {{/advice}}
 
     </div>
 

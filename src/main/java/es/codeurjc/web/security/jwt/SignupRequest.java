@@ -5,23 +5,23 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 public class SignupRequest {
-    @NotBlank(message = "El nombre es obligatorio")
-    @Size(max = 100, message = "El nombre no puede superar los 100 caracteres")
-    private String nombre;
+    @NotBlank(message = "The name is mandatory")
+    @Size(max = 100, message = "The name cannot exceed 100 characters")
+    private String name;
 
-    @NotBlank(message = "El email es obligatorio")
-    @Email(message = "El email debe tener un formato válido")
-    @Size(max = 255, message = "El email no puede superar los 255 caracteres")
+    @NotBlank(message = "The email is mandatory")
+    @Email(message = "The email must have a valid format")
+    @Size(max = 255, message = "The email cannot exceed 255 characters")
     private String email;
 
-    @NotBlank(message = "La contraseña es obligatoria")
-    @Size(min = 4, max = 100, message = "La contraseña debe tener entre 4 y 100 caracteres")
+    @NotBlank(message = "The password is mandatory")
+    @Size(min = 4, max = 100, message = "The password must be between 4 and 100 characters")
     private String password;
 
     public SignupRequest() {}
 
-    public String getNombre() { return nombre; }
-    public void setNombre(String nombre) { this.nombre = nombre; }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }

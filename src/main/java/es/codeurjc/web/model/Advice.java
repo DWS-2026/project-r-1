@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 @Entity
-public class Consejo {
+public class Advice {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -24,23 +24,23 @@ public class Consejo {
     @Column(columnDefinition = "MEDIUMBLOB")
     private byte[] imageBytes;
 
-    // --- NUEVOS CAMPOS PARA EL ARCHIVO EN DISCO ---
-    private String attachmentName; // Nombre original para mostrar al usuario
-    private String attachmentPath; // Ruta interna segura en el servidor
+    // --- NEW FIELDS FOR THE FILE ON DISK ---
+    private String attachmentName; // Original name to show the user
+    private String attachmentPath; // Safe internal path on the server
 
     @ManyToOne
-    private Usuario seller;
+    private User seller;
 
-    @OneToMany(mappedBy = "consejo", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Transaccion> transactions = new ArrayList<>();
+    @OneToMany(mappedBy = "advice", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Transaction> transactions = new ArrayList<>();
 
-    @OneToMany(mappedBy = "consejo", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Valoracion> reviews = new ArrayList<>();
+    @OneToMany(mappedBy = "advice", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Review> reviews = new ArrayList<>();
 
-    // AHORA ES PUBLIC PARA QUE MAPSTRUCT NO FALLE
-    public Consejo() {}
+    // NOW PUBLIC SO MAPSTRUCT DOES NOT FAIL
+    public Advice() {}
 
-    public Consejo(String title, String category, double price, String secretText, Usuario seller) {
+    public Advice(String title, String category, double price, String secretText, User seller) {
         this.title = title;
         this.category = category;
         this.price = price;
@@ -48,7 +48,7 @@ public class Consejo {
         this.seller = seller;
     }
 
-    public Consejo(String title, String category, double price, String secretText, String imagePath, Usuario seller) {
+    public Advice(String title, String category, double price, String secretText, String imagePath, User seller) {
         this.title = title;
         this.category = category;
         this.price = price;
@@ -83,12 +83,12 @@ public class Consejo {
     public String getAttachmentPath() { return attachmentPath; }
     public void setAttachmentPath(String attachmentPath) { this.attachmentPath = attachmentPath; }
 
-    public Usuario getSeller() { return seller; }
-    public void setSeller(Usuario seller) { this.seller = seller; }
+    public User getSeller() { return seller; }
+    public void setSeller(User seller) { this.seller = seller; }
 
-    public List<Transaccion> getTransactions() { return transactions; }
-    public void setTransactions(List<Transaccion> transactions) { this.transactions = transactions; }
+    public List<Transaction> getTransactions() { return transactions; }
+    public void setTransactions(List<Transaction> transactions) { this.transactions = transactions; }
 
-    public List<Valoracion> getReviews() { return reviews; }
-    public void setReviews(List<Valoracion> reviews) { this.reviews = reviews; }
+    public List<Review> getReviews() { return reviews; }
+    public void setReviews(List<Review> reviews) { this.reviews = reviews; }
 }

@@ -6,10 +6,10 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import es.codeurjc.web.model.Consejo;
-import es.codeurjc.web.model.Usuario;
-import es.codeurjc.web.repository.ConsejoRepository;
-import es.codeurjc.web.repository.UsuarioRepository;
+import es.codeurjc.web.model.Advice;
+import es.codeurjc.web.model.User;
+import es.codeurjc.web.repository.AdviceRepository;
+import es.codeurjc.web.repository.UserRepository;
 
 import java.io.InputStream;
 import java.util.List;
@@ -18,10 +18,10 @@ import java.util.List;
 public class DatabaseInitializer implements CommandLineRunner {
 
     @Autowired
-    private UsuarioRepository usuarioRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    private ConsejoRepository consejoRepository;
+    private AdviceRepository adviceRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -29,47 +29,47 @@ public class DatabaseInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         
-        // Solo insertamos datos si la base de datos está vacía
-        if (usuarioRepository.count() == 0) {
+        // We only insert data if the database is empty
+        if (userRepository.count() == 0) {
             
-            System.out.println("🛠️ Inicializando datos de ejemplo en la BBDD...");
+            System.out.println("🛠️ Initializing sample data in the DB...");
 
-            // 1. Crear usuarios de ejemplo
-            Usuario admin = new Usuario("Admin", "admin@admin.com", passwordEncoder.encode("pass"));
+            // 1. Create sample users
+            User admin = new User("Admin", "admin@admin.com", passwordEncoder.encode("pass"));
             admin.setRoles(List.of("USER", "ADMIN"));
-            usuarioRepository.save(admin);
+            userRepository.save(admin);
 
-            Usuario seller = new Usuario("FerminAragones", "fermin@urjc.es", passwordEncoder.encode("pass"));
-            usuarioRepository.save(seller);
+            User seller = new User("FerminAragones", "fermin@urjc.es", passwordEncoder.encode("pass"));
+            userRepository.save(seller);
 
-            Usuario buyer = new Usuario("Comprador", "comprador@urjc.es", passwordEncoder.encode("pass"));
-            usuarioRepository.save(buyer);
+            User buyer = new User("Buyer", "comprador@urjc.es", passwordEncoder.encode("pass"));
+            userRepository.save(buyer);
 
-            // 2. Crear consejos de ejemplo
-            Consejo c1 = new Consejo("Cómo encontrar el amor", "Amor", 5.00, "El que come de todo no pasa hambre", seller);
-            c1.setImageBytes(cargarImagen("static/image/rosa.jpg"));
-            consejoRepository.save(c1);
+            // 2. Create sample advices
+            Advice c1 = new Advice("How to find love", "Love", 5.00, "Beggars can't be choosers", seller);
+            c1.setImageBytes(loadImage("static/image/rosa.jpg"));
+            adviceRepository.save(c1);
 
-            Consejo c2 = new Consejo("Cómo hacerte rico", "Finanzas", 999.99, "Invierte en Bitcoin", seller);
-            c2.setImageBytes(cargarImagen("static/image/stonkss.jpg"));
-            consejoRepository.save(c2);
+            Advice c2 = new Advice("How to get rich", "Finance", 999.99, "Invest in Bitcoin", seller);
+            c2.setImageBytes(loadImage("static/image/stonkss.jpg"));
+            adviceRepository.save(c2);
 
-            Consejo c3 = new Consejo("Aprobar DWS en 2026 😱 Real NO FAKE", "Estudios", 240.00, "ESTUDIA CABRON!!!", admin);
-            c3.setImageBytes(cargarImagen("static/image/nerd.png"));
-            consejoRepository.save(c3);
+            Advice c3 = new Advice("Pass DWS in 2026 😱 Real NO FAKE", "Studies", 240.00, "STUDY HARD!!!", admin);
+            c3.setImageBytes(loadImage("static/image/nerd.png"));
+            adviceRepository.save(c3);
 
-            System.out.println("✅ Datos de ejemplo cargados con éxito.");
+            System.out.println("✅ Sample data successfully loaded.");
         }
     }
 
-    // Método auxiliar para leer una imagen de la carpeta static y convertirla a bytes para la BBDD
-    private byte[] cargarImagen(String ruta) {
+    // Helper method to read an image from the static folder and convert it to bytes for the DB
+    private byte[] loadImage(String path) {
         try {
-            InputStream is = new ClassPathResource(ruta).getInputStream();
+            InputStream is = new ClassPathResource(path).getInputStream();
             return is.readAllBytes();
         } catch (Exception e) {
-            System.out.println("⚠️ Aviso: No se pudo cargar la imagen de ejemplo: " + ruta);
-            return null; // Si no encuentra la imagen, se queda a null sin romper la app
+            System.out.println("⚠️ Warning: Could not load the sample image: " + path);
+            return null; // If it doesn't find the image, it stays null without breaking the app
         }
     }
 }

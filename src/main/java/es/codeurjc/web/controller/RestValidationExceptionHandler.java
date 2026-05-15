@@ -47,14 +47,14 @@ public class RestValidationExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
-    // FIX INFO LEAK: El handler genérico ya no devuelve el mensaje interno de la excepción,
-    // evitando que se filtren rutas, nombres de clases u otros detalles de implementación.
+    // FIX INFO LEAK: The generic handler no longer returns the internal exception message,
+    // preventing the leaking of paths, class names, or other implementation details.
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleGenericException(Exception ex) {
         Map<String, Object> response = new HashMap<>();
         response.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         response.put("error", HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
-        response.put("message", "Ha ocurrido un error interno en el servidor. Contacta con el administrador.");
+        response.put("message", "An internal server error has occurred. Contact the administrator.");
         
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
